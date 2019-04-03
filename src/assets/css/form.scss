@@ -1,0 +1,27 @@
+.demo-ruleForm {
+  padding: .4rem 0 .4rem .4rem;
+}
+.submit--btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+  text-align: center;
+  border-radius: 200px;
+  height: .6rem;
+  line-height: .6rem;
+  background: linear-gradient(90deg, #4F6AEB 0, #7E9BF4 100%);
+  box-shadow: 0px .1rem .19rem #AEBAF6;
+  font-size: .24rem;
+  color: #fff;
+  margin-left: 2.5rem;
+  transition: all .3s ease-in-out;
+}
+.submit--btn:hover {
+  background: linear-gradient(90deg, rgb(134, 153, 248) 0, rgb(192, 205, 243) 100%);
+  box-shadow: 0px .14rem .19rem rgb(210, 216, 245);
+  transition: all .3s ease-in-out;
+}
+.el-date-table td span {
+  text-align: center;
+}

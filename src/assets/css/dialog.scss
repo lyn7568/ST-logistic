@@ -1,0 +1,13 @@
+#app {
+  .el-dialog__header,
+  .el-dialog__title {
+    background: #4C67EA;
+    color: #fff;
+  }
+  .el-dialog__headerbtn .el-dialog__close {
+    color: #fff;
+  }
+  .el-dialog {
+    width: 60%;
+  }
+}

@@ -1,0 +1,83 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  text-align: left;
+  height: 100%;
+  min-height: 9.2rem;
+  width: 19.2rem;
+  overflow-x: hidden;
+  background: #F0F3FA;
+}
+ol,li,ul,p,div {
+  text-align: left;
+}
+input {
+  outline: none;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+ol,ul {
+  list-style-type: none;
+}
+
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+
+.cir {
+  border-radius: 50%;
+}
+.flex {
+  display: flex;
+}
+.flex1 {
+  flex: 1;
+}
+.wrap {
+  flex-wrap: wrap;
+}
+.flex-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.hover:hover{
+  cursor: pointer;
+}
+.between {
+  justify-content: space-between;
+}
+.align-center {
+  align-items: center;
+}
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-justify {
+  text-align: justify;
+}
+
+.box {
+  box-sizing: border-box;
+}
+h1,h2,h3,h4,h5,h6 {
+  font-weight: normal;
+}
+.full {
+  width: 100%;
+}
+
