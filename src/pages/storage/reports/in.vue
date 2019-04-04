@@ -1,98 +1,27 @@
 
 <template>
   <div class="List-page">
-    <MyTitle text = "入库记录"></MyTitle>
+    <MyTitle text = "入库管理"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
         <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input" @change="getlists"></el-input>
       </div>
-      <el-table
-      :data="tableData"
-      stripe
-      style="width: 100%">
-      <el-table-column
-        type="index"
-        align = "center"
-        :index = "(i) => i >=9 ? (i + 1) : `0${ i + 1 }`"
-        label = "序号"
-        width="80">
-      </el-table-column>
-      <el-table-column
-        prop="wareHouse"
-        label="区域仓库">
-        <template slot-scope="scope">
-          <span >{{ scope.row.wareHouse }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="date"
-        label="日期"
-        width="150">
-        <template slot-scope="scope">
-          <span >{{ scope.row.date }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="入库明细">
-        <el-table-column
-          prop="name"
-          label="名称">
-        </el-table-column>
-        <el-table-column
-          prop="number"
-          label="编号">
-        </el-table-column>
-        <el-table-column
-          prop="price"
-          label="单价">
-        </el-table-column>
-        <el-table-column
-          prop="standard"
-          label="规格">
-        </el-table-column>
-        <el-table-column
-          prop="place"
-          label="产地">
-        </el-table-column>
-        <el-table-column
-          prop="amount"
-          label="数量">
-        </el-table-column>
-      </el-table-column>
-      <el-table-column
-        label="合计数量">
-        <template slot-scope="scope">
-          <span >{{ scope.row.amount }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="总金额">
-        <template slot-scope="scope">
-          <span >{{ scope.row.amount * scope.row.price }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column 
-        prop="approverName"
-        label="审批人">
-        <template slot-scope="scope">
-          <span >{{ scope.row.approverName }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
-      <div class="flex-center foot--pagination">
-        <el-pagination
-          background
-          @current-change = "changePage"
-          :current-page = "page"
-          layout='prev, pager, next, jumper, ->'
-          :total="total">
-        </el-pagination>
-      </div>
+      <el-tabs v-model="activeName" type="border-card">
+        <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
+          <complex-table ref="tableChildObj" v-loading="tableLoading"
+            :tableObject="tableObjectFirst"
+            @pageCurFun="currentPageChangeFirst"
+            @pageSizeFun="pageSizeChangeFirst"
+            @deleteFun="deleteFun"
+            @editOpenDialogFun="editOpenDialogFun"></complex-table>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-
+import complexTable from '@/components/ComplexTable'
 export default {
   data () {
     return {
@@ -105,7 +34,83 @@ export default {
       total: 0,
       searchText: '',
       nowIndex: 0,
+
+      activeName: '1',
+      tabList: [
+        {
+          tab: '1',
+          name: '所有'
+        },
+        {
+          tab: '2',
+          name: '待审批'
+        },
+        {
+          tab: '3',
+          name: '已通过'
+        },
+        {
+          tab: '4',
+          name: '未通过'
+        }
+      ],
+      tableLoading: false,
+      tableObjectFirst: {
+        el: 'tableArea',
+        data: [],
+        pageNo: 1,
+        total: 0,
+        pageSize: 10,
+        arr: [
+          {
+            prop: 'id',
+            tit: '入库单号'
+          },
+          {
+            prop: 'name',
+            tit: '区域名称'
+          },
+          {
+            prop: 'imageUrl',
+            tit: '区域图片Url'
+          },
+          {
+            prop: 'imageParam',
+            tit: '配置参数'
+          },
+          {
+            prop: 'type',
+            tit: '区域类别'
+          },
+          {
+            prop: 'qkSn',
+            tit: '所属区域'
+          },
+          {
+            prop: 'description',
+            tit: '备注'
+          },
+          {
+            operate: 'edit',
+            tit: '操作',
+            width: '100'
+          }
+        ],
+        oFun: [
+          {
+            icon: 'edit',
+            event: 'editOpenDialogFun'
+          },
+          {
+            icon: 'delete',
+            event: 'deleteFun'
+          }
+        ]
+      }
     }
+  },
+  components: {
+    complexTable
   },
   methods: {
     changePage(page) {
@@ -128,6 +133,34 @@ export default {
       } else {
         this.tableData = [];
       }
+    },
+    deleteFun(val){
+      var that=this
+      this.$http.post('/user/delete', {
+        id: val.id
+      }, function(res) {
+        if (res.success) {
+          that.$message({
+            message: "删除成功",
+            type: 'success'
+          })
+          that.resetInfo()
+        }
+      })
+    },
+    pageSizeChangeFirst(val) {
+      this.tableObjectFirst.pageSize = val
+      this.queryInfoList()
+    },
+    currentPageChangeFirst(val) {
+      this.tableObjectFirst.pageNo = val
+      this.queryInfoList()
+    },
+    editOpenDialogFun(val) {
+      this.$refs.openUserUpdateDialog.openDiag(val)
+    },
+    addOpenDialogFun() {
+      this.$refs.openUserAreaDialog.openDiag()
     }
   },
   created() {

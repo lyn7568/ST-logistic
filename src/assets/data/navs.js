@@ -216,15 +216,6 @@ module.exports = [{
       "subMenuList": [
         {
           "iconUrl": "",
-          "id": 30,
-          "menuText": "新增仓库",
-          "menuUrl": "/storage/store/add",
-          "parentId": 29,
-          "status": 1,
-          "subMenuList": []
-        },
-        {
-          "iconUrl": "",
           "id": 31,
           "menuText": "仓库列表",
           "menuUrl": "/storage/store/list",

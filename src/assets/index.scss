@@ -46,6 +46,9 @@
   background: linear-gradient(90deg, #7E9BF4  0, #8e9bd8 100%);
   transition: background .3s;
 }
+.list--btn__wrap {
+  width: 4rem;
+}
 .nocolor--btn {
   @include btn;
   width: 1.9rem;
@@ -154,10 +157,10 @@
     font-size: 16px;
     color: #fff;
   }
-  .el-table .cell,
-  .el-table .cell>div {
-    text-align: center;
-  }
+  // .el-table .cell,
+  // .el-table .cell>div {
+  //   text-align: center;
+  // }
   .el-table {
     font-size: 16px;
   }

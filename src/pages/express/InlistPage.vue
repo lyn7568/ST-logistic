@@ -228,8 +228,4 @@ export default {
 .foot--pagination {
   margin: .24rem 0;
 }
-.list--btn__wrap {
-  width: 4rem;
-}
-
 </style>

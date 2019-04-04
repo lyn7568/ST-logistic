@@ -1,217 +1,139 @@
 
 <template>
-  <div class="List-page">
-    <MyTitle text = "员工管理"></MyTitle>
+  <div class="Add-page">
+    <MyTitle text = "仓库列表"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input" @change="getlists"></el-input>
+        <div>
+          <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input"></el-input>
+        </div>
+        <div class = "flex between list--btn__wrap">
+          <div class="list--btn color--btn">搜索</div>
+          <div class="list--btn color--btn" @click="addEvent">添加</div>
+        </div>
       </div>
-      
-      <el-table
-        :data="tableData"
-        stripe
-        style="width: 100%">
-        <el-table-column
-          type="index"
-          align = "center"
-          :index = "(i) => i >=9 ? (i + 1) : `0${ i + 1 }`"
-          label = "序号"
-          width="80">
-        </el-table-column>
-        <el-table-column
-          label="员工账号"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.loginName || '无' }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="员工姓名"
-          align = "center"
-          width="160">
-          <template slot-scope="scope">
-            <span >{{ scope.row.name || '无' }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="员工电话"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.tel | tel }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="角色"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ getRole(scope.row.roleId) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="性别"
-          align = "center"
-          width="80">
-          <template slot-scope="scope">
-            <span >{{ scope.row.sex | sex }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="年龄"
-          align = "center"
-          width="60">
-          <template slot-scope="scope">
-            <span >{{ scope.row.age }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="登录密码"
-          align = "center"
-          width="160">
-          <template slot-scope="scope">
-            <span >{{ scope.row.LoginPassword | pwd }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="入职时间"
-          align = "center"
-          width="160">
-          <template slot-scope="scope">
-            <span >{{ scope.row.createTime  }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align = "center"
-          >
-          <template slot-scope="scope">
-            <div class="option--btns flex-center">
-              <div class="option--btn" @click  = "edit(scope.row, scope)">修改</div>
-              <div class="option--btn" @click  = "delConfirm(scope.row)">删除</div>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div class="flex-center foot--pagination">
-        <el-pagination
-          background
-          @current-change = "changePage"
-          :current-page = "page"
-          layout='prev, pager, next, jumper, ->'
-          :total="total">
-        </el-pagination>
-      </div>
-      <EditStaff :show.sync = "show" :obj = "obj" @close = "close" :nowIndex = "nowIndex"></EditStaff>
+      <tree-table :data="tableData" :columns="columns" :operatingList="operatingList"
+       @editEvent="editEvent" @deleteEvent="deleteEvent"
+       border/>
     </div>
+    <EditStore ref="editstore"></EditStore>
   </div>
 </template>
 
 <script>
-import EditStaff from '@/components/modals/EditStaff'
-
+import treeTable from "@/components/TreeTable"
+import EditStore from '@/components/modals/EditStore'
 export default {
-  name: 'ListPage',
   components: {
-    EditStaff
+    treeTable,
+    EditStore
   },
-  data () {
+  data() {
     return {
-      show: false,
-      obj: {},
-      tableData: [],
-
-      page: 1,
-      pageSize: 10,
-      total: 0,
       searchText: '',
-      nowIndex: 0,
-    }
+      columns: [
+        {
+          label: '名称',
+          key: 'name',
+          expand: true,
+          align: 'left'
+        },
+        {
+          label: 'ID',
+          key: 'id'
+        },
+        {
+          label: '操作',
+          operate: true
+        }
+      ],
+      operatingList: [
+        {
+          text: '编辑',
+          event: 'editEvent'
+        },
+        {
+          text: '删除',
+          event: 'deleteEvent'
+        }
+      ],
+      tableData: [
+        {
+          id: 1,
+          name: "1号仓库",
+          pid: 0
+        },
+        {
+          id: 2,
+          name: "2号仓库",
+          pid: 0,
+          children: [
+            {
+              id: 3,
+              pid: 2,
+              name: "库区1",
+              children: [
+                {
+                  id: 4,
+                  pid: 3,
+                  name: "货位1"
+                },
+                {
+                  id: 5,
+                  pid: 3,
+                  name: "货位2"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
   },
   methods: {
-    changePage(page) {
-      this.page = page;
-      this.getlists();
+    addEvent() {
+      this.$refs.editstore.openDialog()
     },
-    async getlists() {
-      let params = {
-        page: this.page,
-        pageSize: this.pageSize,
-        name: this.searchText,
-      }
-
-      let { data } = await this.$http.post('/logistics/user/getUserPageList.do', params),
-          result = data.result;
-
-      if(data.code == 1) {
-        this.tableData = result.result;
-        this.total = result.total_page * this.pageSize;
-      } else {
-        this.tableData = [];
-      }
+    editEvent(obj) {
+      this.$refs.editstore.openDialog(obj)
     },
-    edit(obj, scope) {
-      this.obj = Object.assign({}, obj);
-      this.show = true;
-      this.nowIndex = scope.$index;
+    deleteEvent(obj) {
+      // this.$confirm('确定删除该条内容？', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning',
+      //   center: true
+      // }).then(() => {
+      //   this.$http.get(deleteUrl, { id: obj.id }, response => {
+      //     if (response.success) {
+      //       if (response.data) {
+      //         this.draftList()
+      //         this.$message({
+      //           message: '删除成功',
+      //           type: 'success'
+      //         })
+      //       } else {
+      //         this.$http.get(inquireContentUrl, { id: this.id }, (response) => {
+      //           if (response.success && response.data) {
+      //             const info = response.data
+      //             if (!info.actived) {
+      //               this.$message({
+      //                 message: '该内容已被删除',
+      //                 type: 'warning'
+      //               })
+      //             }
+      //           }
+      //         })
+      //       }
+      //     }
+      //   })
+      // }).catch(() => {
+      // })
     },
-    close(obj) {
-      this.show = false;
-      if(obj) {
-        let index = this.nowIndex,
-            lists = [ ...this.tableData ];
-        lists[index] = obj;
-        this.tableData = lists;
-      }
-
-    },
-    delConfirm(obj) {
-      let { id } = obj;
-      this.$confirm('此操作有风险, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.del(obj);
-      }).catch((err) => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });          
-      });
-    },
-    async del(obj) {
-      let { id, roleId } = obj,
-          { page, pageSize } = this;
-
-      let params = { id, page, pageSize, roleId };
-
-      let { data } = await this.$http.post('/logistics/user/delete.do', params);
-
-      this.showMsg(data);
-
-      if(data.code == 1) {
-        this.getlists();
-      }
-    },
-    getRole(id) {
-      var obj = this.$root.roles.filter(v => v.id === id)[0];
-      if(obj) {
-        return obj.roleName;
-      }
-      return '无'
-    }
-  },
-  created() {
-    this.getlists();
   }
 }
 </script>
 
 <style scoped lang='scss'>
-.foot--pagination {
-  margin: .24rem 0;
-}
+
 </style>

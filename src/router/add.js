@@ -20,7 +20,6 @@ const GoodsList = () => import('@/pages/storage/goods/list.vue');
 const AddShop = () => import('@/pages/storage/shop/add.vue');
 const ShopList = () => import('@/pages/storage/shop/list.vue');
 
-const AddStore = () => import('@/pages/storage/store/add.vue');
 const StoreList = () => import('@/pages/storage/store/list.vue');
 const StoreManage = () => import('@/pages/storage/store/manage.vue');
 
@@ -92,10 +91,6 @@ export default [
   {
     path: '/storage/goods/list', 
     component: GoodsList
-  },
-  {
-    path: '/storage/store/add', 
-    component: AddStore
   },
   {
     path: '/storage/store/list', 
