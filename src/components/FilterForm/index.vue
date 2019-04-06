@@ -12,6 +12,19 @@
           :value="sel.id">
         </el-option>
       </el-select>
+      <el-cascader
+        v-else-if="item.cascader"
+        :options="item.cascader"
+        :props="{
+          value: 'id',
+          label: 'name',
+          children: 'result'
+        }"
+        change-on-select
+        clearable
+        v-model="formObject.model[item.prop]"
+        :placeholder="'请选择'+item.tit">
+      </el-cascader>
       <el-input v-else clearable v-model="formObject.model[item.prop]" :placeholder="'请填写'+ item.tit"></el-input>
     </el-form-item>
     <el-form-item style="float:right" v-for="operate in formObject.oFun" :key="operate.index">

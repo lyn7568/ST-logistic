@@ -27,7 +27,9 @@
           </el-date-picker>
           <el-checkbox
             v-else-if="item.checkbox"
-            v-model="formModel[item.prop]">
+            v-model="formModel[item.prop]"
+            :checked="!formModel[item.prop]"
+            @change="changeChecked">
           </el-checkbox>
           <el-select
             v-else-if="item.select"
@@ -45,6 +47,18 @@
             v-model="formModel[item.prop]"
             :min="1">
           </el-input-number>
+          <el-cascader
+            v-else-if="item.cascader"
+            :options="item.cascader"
+            :props="{
+              value: 'id',
+              label: 'name',
+              children: 'result'
+            }"
+            clearable
+            v-model="formModel[item.prop]"
+            :placeholder="'请选择'+item.tit">
+          </el-cascader>
           <el-input
             v-else
             v-model="formModel[item.prop]"
@@ -81,6 +95,9 @@
       this.pushRulesFn()
     },
     methods: {
+      changeChecked(val) {
+        this.$emit('changeIfUse', val)
+      },
       pushRulesFn() {
         var that = this
         const formItem = this.formItem

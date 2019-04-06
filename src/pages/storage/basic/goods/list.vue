@@ -45,18 +45,16 @@ export default {
             tit: '货物编号'
           },
           {
-            prop: 'classificationId',
-            tit: '所属分类',
-            // classifyName: true
+            prop: 'classificationName',
+            tit: '所属分类'
           },
           {
             prop: 'factoryNumber',
             tit: '厂商编码'
           },
           {
-            prop: 'shopId',
-            tit: '所属店铺',
-            // shopName: true
+            prop: 'shopName',
+            tit: '所属店铺'
           },
           {
             prop: 'price',

@@ -20,6 +20,7 @@
 import complexTable from '@/components/ComplexTable'
 import filterForm from '@/components/FilterForm'
 import editDeport from './edit'
+import { slelectDeportType } from '@/util/dict'
 
 export default {
   components: {
@@ -51,7 +52,8 @@ export default {
           },
           {
             prop: 'ifUse',
-            tit: '是否禁用'
+            tit: '是否禁用',
+            ifUse: true
           },
           {
             prop: 'address',
@@ -113,20 +115,7 @@ export default {
           {
             prop: 'type',
             tit: '类型',
-            select: [
-              {
-                id: '0',
-                name: '成品仓库'
-              },
-              {
-                id: '1',
-                name: '原料仓库'
-              },
-              {
-                id: '2',
-                name: '半成品仓库'
-              }
-            ]
+            select: slelectDeportType
           }
         ],
         oFun: [

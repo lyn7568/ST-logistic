@@ -20,7 +20,7 @@
 import complexTable from '@/components/ComplexTable'
 import filterForm from '@/components/FilterForm'
 import editDeport from './edit'
-
+import { slelectLocationType } from '@/util/dict'
 export default {
   components: {
     editDeport,
@@ -50,12 +50,17 @@ export default {
             lType: true
           },
           {
-            prop: 'areaId',
+            prop: 'warehouseName',
+            tit: '所属仓库'
+          },
+          {
+            prop: 'areaName',
             tit: '所属库区'
           },
           {
             prop: 'ifUse',
-            tit: '是否禁用'
+            tit: '是否禁用',
+            ifUse: true
           },
           {
             prop: 'remark',
@@ -87,7 +92,8 @@ export default {
         model: {
           name: '',
           number: '',
-          type: ''
+          type: '',
+          ckq: []
         },
         arr: [
           {
@@ -101,20 +107,12 @@ export default {
           {
             prop: 'type',
             tit: '类型',
-            select: [
-              {
-                id: '0',
-                name: '成品货位'
-              },
-              {
-                id: '1',
-                name: '原料货位'
-              },
-              {
-                id: '2',
-                name: '半成品货位'
-              }
-            ]
+            select: slelectLocationType
+          },
+          {
+            prop: 'ckq',
+            tit: '仓库/库区',
+            cascader: this.$root.wareHouseAreas
           }
         ],
         oFun: [
@@ -143,14 +141,20 @@ export default {
     },
     async getlists() {
       this.tableLoading = true
+      let wid = '', aid = ''
+      if (this.formObject.model.ckq){
+        wid = this.formObject.model.ckq[0]
+        aid = this.formObject.model.ckq[1]
+      }
       let params = {
         page: this.tableObjectFirst.pageNo,
         pageSize: this.tableObjectFirst.pageSize,
         name: this.formObject.model.name,
         number: this.formObject.model.number,
         type: this.formObject.model.type,
+        warehouseId: wid,
+        areaId: aid,
       }
-
       let { data } = await this.$http.post('/warehouse/locationList', params),
           res = data.result;
       if(data.code == 1) {

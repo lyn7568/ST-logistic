@@ -76,21 +76,30 @@ new Vue({
       }
     },
     async getShops() {
-      let { data } = await this.$http.post('/product/shopList', { });
+      let { data } = await this.$http.post('/product/shopList', {
+        page: 1,
+        pageSize: 1000
+       });
       if(data.code == 1) {
         this.shops = data.result;
       }
     },
     async getWareHouses() {
-      let { data } = await this.$http.post('/warehouse/list', { });
+      let { data } = await this.$http.get('/warehouse/getAllWarehouse', { });
       if(data.code == 1) {
         this.wareHouses = data.result;
+        for(let i = 0; i < data.result.length; ++i) {
+          this.getWareHousesArea(data.result[i])
+        }
+        this.wareHouseAreas = data.result;
       }
     },
-    async getWareHousesArea() {
-      let { data } = await this.$http.post('/warehouse/areaList', { });
+    async getWareHousesArea(obj) {
+      let { data } = await this.$http.post('/warehouse/getAreaByWarehouseId', {
+        warehouseId: obj.id
+      });
       if(data.code == 1) {
-        this.wareHouseAreas = data.result;
+        obj.result = data.result
       }
     }
   },
@@ -109,7 +118,6 @@ new Vue({
     this.getClassificationss();
     this.getShops();
     this.getWareHouses();
-    this.getWareHousesArea();
     this.initData();
   },
   render: h => h(App)

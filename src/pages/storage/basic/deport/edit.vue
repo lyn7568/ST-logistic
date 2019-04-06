@@ -3,7 +3,7 @@
     :title="(objId ? '修改': '添加')+ '仓库信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"></form-lists>
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
@@ -13,6 +13,7 @@
 
 <script>
 import formLists from '@/components/Formlists'
+import { slelectDeportType } from '@/util/dict'
 export default {
   data () {
     return {
@@ -35,20 +36,7 @@ export default {
           prop: 'type',
           tit: '类型',
           required: true,
-          select: [
-            {
-              id: '0',
-              name: '成品仓库'
-            },
-            {
-              id: '1',
-              name: '原料仓库'
-            },
-            {
-              id: '2',
-              name: '半成品仓库'
-            }
-          ]
+          select: slelectDeportType
         },
         {
           prop: 'ifUse',
@@ -119,6 +107,9 @@ export default {
       setTimeout(() => {
         that.dialogFormVisible = true
       }, 1)
+    },
+    changeIfUse(val) {
+      this.formObj.ifUse = Number(!val)
     },
     closeDialog() {
       this.$refs['showForm'].$refs['formObj'].clearValidate()

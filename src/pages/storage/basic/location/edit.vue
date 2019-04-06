@@ -3,7 +3,7 @@
     :title="(objId ? '修改': '添加')+ '货位信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"></form-lists>
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
@@ -13,6 +13,7 @@
 
 <script>
 import formLists from '@/components/Formlists'
+import { slelectLocationType } from '@/util/dict'
 export default {
   data () {
     return {
@@ -32,25 +33,16 @@ export default {
           required: true
         },
         {
-          prop: 'areaId',
-          tit: '所属库区',
-          required: true,
-          select: this.$root.wareHouseAreas
+          prop: 'ckq',
+          tit: '仓库/库区',
+          cascader: this.$root.wareHouseAreas,
+          required: true
         },
         {
           prop: 'type',
           tit: '类型',
           required: true,
-          select: [
-            {
-              id: '0',
-              name: '正常货位'
-            },
-            {
-              id: '1',
-              name: '其他货位'
-            }
-          ]
+          select: slelectLocationType
         },
         {
           prop: 'ifUse',
@@ -81,6 +73,9 @@ export default {
       var that = this
       if (val) {
         this.objId = val.id
+        val.ckq = []
+        val.ckq.push(val.warehouseId)
+        val.ckq.push(val.areaId)
         this.formObj = val
       } else {
         this.objId = ''
@@ -90,12 +85,15 @@ export default {
           remark: '',
           type: '',
           ifUse: 1,
-          areaId: ''
+          ckq: []
         }
       }
       setTimeout(() => {
         that.dialogFormVisible = true
       }, 1)
+    },
+    changeIfUse(val) {
+      this.formObj.ifUse = Number(!val)
     },
     closeDialog() {
       this.$refs['showForm'].$refs['formObj'].clearValidate()
@@ -105,11 +103,16 @@ export default {
       var that = this
       this.$refs['showForm'].$refs['formObj'].validate(valid => {
         if (valid) {
+          let wid = '', aid = ''
+          if (this.formObj.ckq){
+            wid = this.formObj.ckq[0]
+            aid = this.formObj.ckq[1]
+          }
           var params = {
             name: this.formObj.name,
             number: this.formObj.number,
             remark: this.formObj.remark,
-            areaId: this.formObj.areaId,
+            areaId: aid,
             type: this.formObj.type,
             ifUse: this.formObj.ifUse
           };

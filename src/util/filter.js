@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import {slelectDeportType,slelectAreaType,slelectLocationType} from './dict.js'
 
 function leftPad(str) {
 	return str >= 10 ? str : ("0" + str);
@@ -34,48 +35,28 @@ Vue.filter('sType', function (value) {
 
 // 仓库类型
 Vue.filter('wType', function (value) {
-  switch(value){
-    case '0':
-      return '成品仓库';
-    case '1':
-      return '原料仓库';
-    case '2':
-      return '半成品仓库';
-  }
+  let w = slelectDeportType.find(item => {
+    return item.id === value
+  })
+  return w.name
 });
 // 库区类型
 Vue.filter('aType', function (value) {
-  switch(value){
-    case '0':
-      return '正式库区';
-    case '1':
-      return '待入库区';
-    case '2':
-      return '待检库区';
-    case '3':
-      return '待出库区';
-    case '4':
-      return '报损库区';
-  }
+  let w = slelectAreaType.find(item => {
+    return item.id === value
+  })
+  return w.name
 });
 // 货位类型
 Vue.filter('lType', function (value) {
-  switch(value){
-    case '0':
-      return '正常货位';
-    case '1':
-      return '其他货位';
-  }
+  let w = slelectLocationType.find(item => {
+    return item.id === value
+  })
+  return w.name
 });
-// Vue.filter('classifyName', function (value) {
-//   let rIn = Vue.$root.classifications.find((item) =>{
-//     return item.id = value
-//   }) 
-//   return rIn.name
-// });
-// Vue.filter('shopName', function (value) {
-//   let rIn = Vue.$root.shops.find((item) =>{
-//     return item.id = value
-//   }) 
-//   return rIn.name
-// });
+
+// 是否禁用
+Vue.filter('ifUse', function (value) {
+  return value == 1 ? '否' : '是'
+});
+

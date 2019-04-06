@@ -32,11 +32,6 @@ export default {
           required: true
         },
         {
-          prop: 'classificationId',
-          tit: '所属分类',
-          required: true
-        },
-        {
           prop: 'factoryNumber',
           tit: '厂商编码',
           required: true

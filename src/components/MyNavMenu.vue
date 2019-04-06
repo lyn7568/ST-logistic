@@ -44,11 +44,11 @@ export default {
   },
   methods: {
     getNavs() {
-      // this.$http.post('/logistics/menu/initMenuByRole.do', { roleId: this.$root.userinfo.roleId })
-      // .then(({ data }) => {
-      //   this.navs = data.result;
-      //   this.active = this.navs[0].id
-      // })
+      this.$http.post('/logistics/menu/initMenuByRole.do', { roleId: this.$root.userinfo.roleId })
+      .then(({ data }) => {
+        this.navs = data.result;
+        this.active = '' + this.navs[0].id
+      })
     }
   },
   created() {

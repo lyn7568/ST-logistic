@@ -26,10 +26,11 @@
         :className="item.active"
       >
         <template slot-scope="scope">
-          <template v-if="scope.row[item.prop]">
+          <template v-if="scope.row.hasOwnProperty(item.prop)">
             <div v-if="item.classifyName">{{scope.row[item.prop] | classifyName }}</div>
             <div v-else-if="item.shopName">{{scope.row[item.prop] | shopName }}</div>
             <div v-else-if="item.sType">{{scope.row[item.prop] | sType }}</div>
+            <div v-else-if="item.ifUse">{{scope.row[item.prop] | ifUse }}</div>
             <div v-else-if="item.wType">{{scope.row[item.prop] | wType }}</div>
             <div v-else-if="item.aType">{{scope.row[item.prop] | aType }}</div>
             <div v-else-if="item.lType">{{scope.row[item.prop] | lType }}</div>

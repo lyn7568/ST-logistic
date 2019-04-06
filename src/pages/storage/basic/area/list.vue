@@ -21,6 +21,8 @@ import complexTable from '@/components/ComplexTable'
 import filterForm from '@/components/FilterForm'
 import editDeport from './edit'
 
+import { slelectAreaType } from '@/util/dict'
+
 export default {
   components: {
     editDeport,
@@ -50,12 +52,13 @@ export default {
             aType: true
           },
           {
-            prop: 'warehouseId',
+            prop: 'warehouseName',
             tit: '所属仓库'
           },
           {
             prop: 'ifUse',
-            tit: '是否禁用'
+            tit: '是否禁用',
+            ifUse: true
           },
           {
             prop: 'remark',
@@ -101,20 +104,12 @@ export default {
           {
             prop: 'type',
             tit: '类型',
-            select: [
-              {
-                id: '0',
-                name: '成品库区'
-              },
-              {
-                id: '1',
-                name: '原料库区'
-              },
-              {
-                id: '2',
-                name: '半成品库区'
-              }
-            ]
+            select: slelectAreaType
+          },
+          {
+            prop: 'warehouseId',
+            tit: '所属仓库',
+            select: this.$root.wareHouses
           }
         ],
         oFun: [
@@ -149,6 +144,7 @@ export default {
         name: this.formObject.model.name,
         number: this.formObject.model.number,
         type: this.formObject.model.type,
+        warehouseId: this.formObject.model.warehouseId
       }
 
       let { data } = await this.$http.post('/warehouse/areaList', params),
