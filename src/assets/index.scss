@@ -88,6 +88,18 @@
   color: #999;
 }
 #app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: normal;
+}
+.hide-form {
+  opacity: 0;
+  position: fixed;
+  z-index: -1;
+  top: -100000px;
+  left: -100000px;
+}
+#app {
   .my--navs {
     background: #000046;
     color: #FFFFFF;
@@ -128,8 +140,12 @@
     .el-form-item__content {
       width: 6rem;
     }
-    .el-input__inner {
+    .el-input__inner{
       height: .6rem;
+      line-height: .6rem;
+      font-size: .24rem;
+    }
+    .el-textarea__inner {
       line-height: .6rem;
       font-size: .24rem;
     }
@@ -140,7 +156,7 @@
     .el-input-number__decrease, .el-input-number__increase{
       width: 0.5rem;
       line-height: .58rem;
-      font-size: .24rem;
+      font-size: .2rem;
     }
   }
 
@@ -154,7 +170,7 @@
   
   .el-table th, .el-table .has-gutter {
     background: #4C67EA;
-    font-size: 16px;
+    font-size: 14px;
     color: #fff;
   }
   // .el-table .cell,
@@ -162,7 +178,7 @@
   //   text-align: center;
   // }
   .el-table {
-    font-size: 16px;
+    font-size: 14px;
   }
  
 }
@@ -205,4 +221,39 @@
 
 .foot--pagination {
   margin: .24rem 0;
+}
+
+
+.edit--form__title {
+  font-size: .18rem;
+  padding: .06rem 0 .2rem ;
+  border-bottom: 1px solid #ccc;
+}
+.extra.edit--form__title {
+  padding-top: .24rem;
+}
+.dialog--input {
+  width: 300px;
+  height: 60px;
+  line-height: 60px;
+  display: inline-flex;
+  align-items: center; 
+  font-size: 20px;
+  margin-right: .12rem;
+}
+.dialog--label {
+  font-size: 20px;
+  color: #666;
+  padding-left: .32rem;
+  width: 120px;
+  display: inline-flex;
+}
+.dialog--field {
+  margin-top: .3rem;
+}
+.dialog--foot {
+  padding: .24rem 1.4rem;
+}
+.nocolor--btn {
+  margin-left: .24rem;
 }

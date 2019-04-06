@@ -33,11 +33,6 @@
 
 <script>
 export default {
-  name: 'EditShop',
-  props: {
-    obj: { default() { return {} } },
-    show: { default: false, }
-  },
   data () {
     return {
       ruleForm: {},
@@ -88,40 +83,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.edit--form__title {
-  font-size: .18rem;
-  padding: .06rem 0 .2rem ;
-  border-bottom: 1px solid #ccc;
-}
-.extra.edit--form__title {
-  padding-top: .24rem;
-}
-.dialog--input {
-  width: 300px;
-  height: 60px;
-  line-height: 60px;
-  display: inline-flex;
-  align-items: center; 
-  font-size: 20px;
-  margin-right: .12rem;
-}
-.dialog--label {
-  font-size: 20px;
-  color: #666;
-  padding-left: .32rem;
-  width: 120px;
-  display: inline-flex;
-}
-.dialog--field {
-  margin-top: .3rem;
-}
-.dialog--foot {
-  padding: .24rem 1.4rem;
-}
-.nocolor--btn {
-  margin-left: .24rem;
-}
-</style>

@@ -11,8 +11,8 @@ body {
   overflow-x: hidden;
   background: #F0F3FA;
 }
-ol,li,ul,p,div {
-  // text-align: left;
+ol,li,ul,p,div,textarea {
+  font-family: 'Microsoft Yahei', Helvetica, Arial, sans-serif;
 }
 input {
   outline: none;
@@ -42,6 +42,7 @@ ol,ul {
 }
 .flex1 {
   flex: 1;
+  width: 10rem;
 }
 .wrap {
   flex-wrap: wrap;

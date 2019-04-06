@@ -3,6 +3,7 @@
     <el-table
       ref="tableBody"
       border
+      stripe
       :data="tableObject.data"
       :row-class-name="tableRowClassName"
       :header-row-class-name="tableThClassName"
@@ -17,34 +18,40 @@
       <el-table-column
         v-for="item in tableObject.arr"
         :key="item.index"
-        :prop="item.prop ? item.prop : ''"
-        :label="item.tit ? item.tit : ''"
-        :width="item.width ? item.width : ''"
+        :prop="item.prop || ''"
+        :label="item.tit || ''"
+        :width="item.width || ''"
+        :fixed="item.fixed|| false"
         align="center"
         :className="item.active"
       >
         <template slot-scope="scope">
-          <div v-if="scope.row[item.prop]">{{scope.row[item.prop]}}</div>
-          <div v-if="item.operate && typeof scope.row === 'object'">
+          <template v-if="scope.row[item.prop]">
+            <div v-if="item.classifyName">{{scope.row[item.prop] | classifyName }}</div>
+            <div v-else-if="item.shopName">{{scope.row[item.prop] | shopName }}</div>
+            <div v-else-if="item.sType">{{scope.row[item.prop] | sType }}</div>
+            <div v-else-if="item.wType">{{scope.row[item.prop] | wType }}</div>
+            <div v-else-if="item.aType">{{scope.row[item.prop] | aType }}</div>
+            <div v-else-if="item.lType">{{scope.row[item.prop] | lType }}</div>
+            <div v-else>{{scope.row[item.prop]}}</div>
+          </template>
+          <template v-if="item.operate && typeof scope.row === 'object'">
             <el-button
               type="text"
               v-for="operate in tableObject.oFun"
               :key="operate.index"
               @click="$emit(operate.event, scope.row)"
             >{{operate.text}}</el-button>
-          </div>
+          </template>
         </template>
       </el-table-column>
     </el-table>
     <div class="flex-center foot--pagination">
       <el-pagination
         background
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="tableObject.pageNo"
-        :page-sizes="[10, 20, 30, 40, 50]"
-        :page-size="tableObject.pageSize"
-        layout="prev, pager, next, jumper"
+        layout="prev, pager, next, jumper, ->"
         :total="tableObject.total"
       ></el-pagination>
     </div>
@@ -65,9 +72,6 @@ export default {
     };
   },
   methods: {
-    handleSizeChange(val) {
-      this.$emit('pageSizeFun', val)
-    },
     handleCurrentChange(val) {
       this.$emit('pageCurFun', val);
     },

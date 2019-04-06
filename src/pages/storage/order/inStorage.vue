@@ -4,17 +4,21 @@
     <MyTitle text = "入库管理"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input" @change="getlists"></el-input>
+        <div>
+          <el-input v-model="searchText" placeholder="请输入入库单号内容" clearable class="search--input"></el-input>
+        </div>
+        <div class = "flex between list--btn__wrap">
+          <div class="list--btn color--btn">搜索</div>
+          <div class="list--btn color--btn" @click="addEvent">添加</div>
+        </div>
       </div>
       <el-tabs v-model="activeName" type="border-card">
         <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
-          <complex-table ref="tableChildObj" v-loading="tableLoading"
+        </el-tab-pane>
+        <complex-table ref="tableChildObj" v-loading="tableLoading"
             :tableObject="tableObjectFirst"
             @pageCurFun="currentPageChangeFirst"
-            @pageSizeFun="pageSizeChangeFirst"
-            @deleteFun="deleteFun"
-            @editOpenDialogFun="editOpenDialogFun"></complex-table>
-        </el-tab-pane>
+            @pageSizeFun="pageSizeChangeFirst"></complex-table>
       </el-tabs>
     </div>
   </div>
@@ -25,38 +29,28 @@ import complexTable from '@/components/ComplexTable'
 export default {
   data () {
     return {
-      show: false,
-      obj: {},
-      tableData: [],
-
-      page: 1,
-      pageSize: 10,
-      total: 0,
       searchText: '',
-      nowIndex: 0,
-
-      activeName: '1',
+      activeName: '3',
       tabList: [
         {
-          tab: '1',
+          tab: '3',
           name: '所有'
         },
         {
-          tab: '2',
+          tab: '0',
           name: '待审批'
         },
         {
-          tab: '3',
+          tab: '1',
           name: '已通过'
         },
         {
-          tab: '4',
+          tab: '2',
           name: '未通过'
         }
       ],
       tableLoading: false,
       tableObjectFirst: {
-        el: 'tableArea',
         data: [],
         pageNo: 1,
         total: 0,
@@ -64,46 +58,75 @@ export default {
         arr: [
           {
             prop: 'id',
-            tit: '入库单号'
+            tit: '入库单号',
+            fixed: 'left'
           },
           {
             prop: 'name',
-            tit: '区域名称'
+            tit: '货物名称'
           },
           {
-            prop: 'imageUrl',
-            tit: '区域图片Url'
+            prop: 'number',
+            tit: '货物编号'
           },
           {
-            prop: 'imageParam',
-            tit: '配置参数'
+            prop: 'classify',
+            tit: '货物类别'
           },
           {
-            prop: 'type',
-            tit: '区域类别'
+            prop: 'shop',
+            tit: '所属店铺'
           },
           {
-            prop: 'qkSn',
-            tit: '所属区域'
+            prop: 'price',
+            tit: '单价'
           },
           {
-            prop: 'description',
-            tit: '备注'
+            prop: 'standard',
+            tit: '规格'
           },
           {
-            operate: 'edit',
+            prop: 'place',
+            tit: '产地'
+          },
+          {
+            prop: 'amount',
+            tit: '数量'
+          },
+          {
+            prop: 'fileIds',
+            tit: '图片'
+          },
+          {
+            prop: 'status',
+            tit: '状态'
+          },
+          {
+            prop: 'approverName',
+            tit: '审批人'
+          },
+          {
+            prop: 'operationDate',
+            tit: '审批时间'
+          },
+          {
+            operate: true,
             tit: '操作',
-            width: '100'
+            fixed: 'right'
           }
         ],
         oFun: [
           {
-            icon: 'edit',
-            event: 'editOpenDialogFun'
+            text: '编辑',
+            event: 'editEvent'
           },
           {
-            icon: 'delete',
-            event: 'deleteFun'
+            text: '审批',
+            event: 'approveEvent'
+          },
+          {
+            text: '删除',
+            event: 'deleteEvent'
           }
         ]
       }
@@ -113,14 +136,10 @@ export default {
     complexTable
   },
   methods: {
-    changePage(page) {
-      this.page = page;
-      this.getlists();
-    },
-    async getlists() {
+    async queryInfoList() {
       let params = {
-        page: this.page,
-        pageSize: this.pageSize,
+        page: this.tableObjectFirst.page,
+        pageSize: this.tableObjectFirst.pageSize,
         name: this.searchText,
       }
 
@@ -128,13 +147,16 @@ export default {
           result = data.result;
 
       if(data.code == 1) {
-        this.tableData = result.result;
-        this.total = result.total_page * this.pageSize;
+        this.tableObjectFirst.data = result.result;
+        this.tableObjectFirst.total = result.total_page * this.tableObjectFirst.pageSize;
       } else {
-        this.tableData = [];
+        this.tableObjectFirst.data = [];
       }
     },
-    deleteFun(val){
+    addEvent() {
+
+    },
+    deleteEvent(val){
       var that=this
       this.$http.post('/user/delete', {
         id: val.id
@@ -164,7 +186,7 @@ export default {
     }
   },
   created() {
-    this.getlists();
+    this.queryInfoList();
   }
 }
 </script>

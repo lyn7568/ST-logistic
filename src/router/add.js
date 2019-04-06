@@ -14,20 +14,19 @@ const AllotPage = () => import('@/pages/Express/AllotPage.vue');
 const QueryExcel = () => import('@/pages/Express/QueryExcel.vue');
 const ListPage1 = () => import('@/pages/Express/ListPage1.vue');
 
-const AddGoods = () => import('@/pages/storage/goods/add.vue');
-const GoodsList = () => import('@/pages/storage/goods/list.vue');
 
-const AddShop = () => import('@/pages/storage/shop/add.vue');
-const ShopList = () => import('@/pages/storage/shop/list.vue');
+const GoodsList = () => import('@/pages/storage/basic/goods/list.vue');
+const ShopList = () => import('@/pages/storage/basic/shop/list.vue');
+const StoreList = () => import('@/pages/storage/basic/deport/list.vue');
+const AreaList = () => import('@/pages/storage/basic/area/list.vue');
+const LocationList = () => import('@/pages/storage/basic/location/list.vue');
+const SupplierList = () => import('@/pages/storage/basic/supplier/list.vue');
+const CarrierList = () => import('@/pages/storage/basic/carrier/list.vue');
 
-const StoreList = () => import('@/pages/storage/store/list.vue');
-const StoreManage = () => import('@/pages/storage/store/manage.vue');
+const inReports = () => import('@/pages/storage/order/inStorage.vue');
+const outReports = () => import('@/pages/storage/order/outStorage.vue');
+const StockList = () => import('@/pages/storage/order/stockList.vue');
 
-const inReports = () => import('@/pages/storage/reports/in.vue');
-const outReports = () => import('@/pages/storage/reports/out.vue');
-
-const inApproval = () => import('@/pages/storage/approval/in.vue');
-const outApproval = () => import('@/pages/storage/approval/out.vue');
 
 export default [
   {
@@ -77,44 +76,44 @@ export default [
   },
   
   {
-    path: '/storage/shop/add', 
-    component: AddShop
-  },
-  {
     path: '/storage/shop/list', 
     component: ShopList
-  },
-  {
-    path: '/storage/goods/add', 
-    component: AddGoods
   },
   {
     path: '/storage/goods/list', 
     component: GoodsList
   },
   {
-    path: '/storage/store/list', 
+    path: '/storage/deport/list', 
     component: StoreList
   },
   {
-    path: '/storage/store/manage', 
-    component: StoreManage
+    path: '/storage/area/list', 
+    component: AreaList
   },
   {
-    path: '/storage/reports/in', 
+    path: '/storage/location/list', 
+    component: LocationList
+  },
+  {
+    path: '/storage/supplier/list', 
+    component: SupplierList
+  },
+  {
+    path: '/storage/carrier/list', 
+    component: CarrierList
+  },
+  {
+    path: '/storage/order/stock', 
+    component: StockList
+  },
+  {
+    path: '/storage/order/in', 
     component: inReports
   },
   {
-    path: '/storage/reports/out', 
+    path: '/storage/order/out', 
     component: outReports
-  },
-  {
-    path: '/storage/approval/in', 
-    component: inApproval
-  },
-  {
-    path: '/storage/approval/out', 
-    component: outApproval
   }
 ]
   

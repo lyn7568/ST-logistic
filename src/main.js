@@ -30,6 +30,8 @@ new Vue({
       roles: [],
       classifications: [],
       shops: [],
+      wareHouses: [],
+      wareHouseAreas: [],
       truckList: [], //车辆
       userList: [], //司机
       entrepotList: [], //配送点
@@ -68,17 +70,29 @@ new Vue({
       }
     },
     async getClassificationss() {
-      let { data } = await this.$http.post('/logistics/role/getRoleList.do', { status: 1 });
+      let { data } = await this.$http.get('/product/getProClassify', { });
       if(data.code == 1) {
         this.classifications = data.result;
       }
     },
     async getShops() {
-      let { data } = await this.$http.post('/logistics/role/getRoleList.do', { status: 1 });
+      let { data } = await this.$http.post('/product/shopList', { });
       if(data.code == 1) {
         this.shops = data.result;
       }
     },
+    async getWareHouses() {
+      let { data } = await this.$http.post('/warehouse/list', { });
+      if(data.code == 1) {
+        this.wareHouses = data.result;
+      }
+    },
+    async getWareHousesArea() {
+      let { data } = await this.$http.post('/warehouse/areaList', { });
+      if(data.code == 1) {
+        this.wareHouseAreas = data.result;
+      }
+    }
   },
   created() {
     if(window.cfg.isDev) {
@@ -92,6 +106,10 @@ new Vue({
     }
     this.clear();
     this.getRoles();
+    this.getClassificationss();
+    this.getShops();
+    this.getWareHouses();
+    this.getWareHousesArea();
     this.initData();
   },
   render: h => h(App)

@@ -1,7 +1,7 @@
 
 <template>
   <div class="List-page">
-    <MyTitle text = "店铺列表"></MyTitle>
+    <MyTitle text = "出库记录"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
         <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input" @change="getlists"></el-input>

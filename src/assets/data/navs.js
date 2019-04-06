@@ -153,82 +153,71 @@ module.exports = [{
     {
       "iconUrl": "",
       "id": 23,
-      "menuText": "店铺管理",
+      "menuText": "基本资料",
       "menuUrl": "",
       "parentId": 22,
       "status": 1,
       "subMenuList": [
         {
           "iconUrl": "",
-          "id": 24,
-          "menuText": "新增店铺",
-          "menuUrl": "/storage/shop/add",
+          "id": 25,
+          "menuText": "店铺管理",
+          "menuUrl": "/storage/shop/list",
           "parentId": 23,
           "status": 1,
           "subMenuList": []
         },
         {
           "iconUrl": "",
-          "id": 25,
-          "menuText": "店铺列表",
-          "menuUrl": "/storage/shop/list",
+          "id": 26,
+          "menuText": "货物管理",
+          "menuUrl": "/storage/goods/list",
           "parentId": 23,
           "status": 1,
           "subMenuList": []
-        }
-      ]
-    },
-    {
-      "iconUrl": "",
-      "id": 26,
-      "menuText": "货物管理",
-      "menuUrl": "",
-      "parentId": 22,
-      "status": 1,
-      "subMenuList": [
+        },
         {
           "iconUrl": "",
           "id": 27,
-          "menuText": "新增货物",
-          "menuUrl": "/storage/goods/add",
-          "parentId": 26,
+          "menuText": "仓库管理",
+          "menuUrl": "/storage/deport/list",
+          "parentId": 23,
           "status": 1,
           "subMenuList": []
         },
         {
           "iconUrl": "",
           "id": 28,
-          "menuText": "货物列表",
-          "menuUrl": "/storage/goods/list",
-          "parentId": 26,
-          "status": 1,
-          "subMenuList": []
-        }
-      ]
-    },
-    {
-      "iconUrl": "",
-      "id": 29,
-      "menuText": "仓库管理",
-      "menuUrl": "",
-      "parentId": 22,
-      "status": 1,
-      "subMenuList": [
-        {
-          "iconUrl": "",
-          "id": 31,
-          "menuText": "仓库列表",
-          "menuUrl": "/storage/store/list",
-          "parentId": 29,
+          "menuText": "库区管理",
+          "menuUrl": "/storage/area/list",
+          "parentId": 23,
           "status": 1,
           "subMenuList": []
         },
         {
           "iconUrl": "",
-          "id": 32,
-          "menuText": "仓货管理",
-          "menuUrl": "/storage/store/manage",
-          "parentId": 29,
+          "id": 29,
+          "menuText": "货位管理",
+          "menuUrl": "/storage/location/list",
+          "parentId": 23,
+          "status": 1,
+          "subMenuList": []
+        },
+        {
+          "iconUrl": "",
+          "id": 30,
+          "menuText": "供应商管理",
+          "menuUrl": "/storage/supplier/list",
+          "parentId": 23,
+          "status": 1,
+          "subMenuList": []
+        },
+        {
+          "iconUrl": "",
+          "id": 31,
+          "menuText": "承运商管理",
+          "menuUrl": "/storage/carrier/list",
+          "parentId": 23,
           "status": 1,
           "subMenuList": []
         }
@@ -236,55 +225,36 @@ module.exports = [{
     },
     {
       "iconUrl": "",
-      "id": 33,
-      "menuText": "出入库记录",
+      "id": 32,
+      "menuText": "仓库作业",
       "menuUrl": "",
       "parentId": 22,
       "status": 1,
       "subMenuList": [
         {
           "iconUrl": "",
+          "id": 33,
+          "menuText": "库存盘点",
+          "menuUrl": "/storage/order/stock",
+          "parentId": 32,
+          "status": 1,
+          "subMenuList": []
+        },
+        {
+          "iconUrl": "",
           "id": 34,
-          "menuText": "入库记录",
-          "menuUrl": "/storage/reports/in",
-          "parentId": 33,
+          "menuText": "入库管理",
+          "menuUrl": "/storage/order/in",
+          "parentId": 32,
           "status": 1,
           "subMenuList": []
         },
         {
           "iconUrl": "",
           "id": 35,
-          "menuText": "出库记录",
-          "menuUrl": "/storage/reports/out",
-          "parentId": 33,
-          "status": 1,
-          "subMenuList": []
-        }
-      ]
-    },
-    {
-      "iconUrl": "",
-      "id": 36,
-      "menuText": "出入库审批",
-      "menuUrl": "",
-      "parentId": 22,
-      "status": 1,
-      "subMenuList": [
-        {
-          "iconUrl": "",
-          "id": 37,
-          "menuText": "入库审批",
-          "menuUrl": "/storage/approval/in",
-          "parentId": 36,
-          "status": 1,
-          "subMenuList": []
-        },
-        {
-          "iconUrl": "",
-          "id": 38,
-          "menuText": "出库审批",
-          "menuUrl": "/storage/approval/out",
-          "parentId": 36,
+          "menuText": "出库管理",
+          "menuUrl": "/storage/order/out",
+          "parentId": 32,
           "status": 1,
           "subMenuList": []
         }
