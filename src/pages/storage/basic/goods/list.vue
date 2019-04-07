@@ -69,12 +69,12 @@ export default {
             tit: '产地'
           },
           {
-            prop: 'totalPrice',
-            tit: '总价'
-          },
-          {
             prop: 'amount',
             tit: '数量'
+          },
+          {
+            prop: 'totalPrice',
+            tit: '总价'
           },
           {
             prop: 'createDateTime',

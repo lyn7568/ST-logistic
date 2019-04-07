@@ -34,7 +34,8 @@
           <el-select
             v-else-if="item.select"
             v-model="formModel[item.prop]"
-            :placeholder="item.tit">
+            :placeholder="item.tit"
+            @change="changeSelected">
             <el-option
               v-for="sel in item.select"
               :key="sel.id"
@@ -95,6 +96,9 @@
       this.pushRulesFn()
     },
     methods: {
+      changeSelected(val) {
+        console.log(val)
+      },
       changeChecked(val) {
         this.$emit('changeIfUse', val)
       },

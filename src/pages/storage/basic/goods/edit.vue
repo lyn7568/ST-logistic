@@ -39,7 +39,7 @@ export default {
         {
           prop: 'shopId',
           tit: '所属店铺',
-          select: this.$root.shops,
+          select: this.$root.shopArrs,
           required: true
         },
         {
@@ -87,6 +87,9 @@ export default {
   components: {
     formLists
   },
+  // created() {
+  //   console.log(this.$root.shopArrs)
+  // },
   methods: {
     openDiag(val) {
       var that = this

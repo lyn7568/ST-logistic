@@ -29,7 +29,7 @@ new Vue({
       baseurl: window.cfg.baseurl,
       roles: [],
       classifications: [],
-      shops: [],
+      shopArrs: [],
       wareHouses: [],
       wareHouseAreas: [],
       truckList: [], //车辆
@@ -81,7 +81,7 @@ new Vue({
         pageSize: 1000
        });
       if(data.code == 1) {
-        this.shops = data.result;
+        this.shopArrs = data.result.result;
       }
     },
     async getWareHouses() {
