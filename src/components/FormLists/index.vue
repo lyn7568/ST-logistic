@@ -43,7 +43,7 @@
               :value="sel.id">
             </el-option>
           </el-select>
-          <el-select
+          <!-- <el-select
             v-else-if="item.searchSelect"
             v-model="formModel[item.prop]"
             :placeholder="item.tit"
@@ -55,7 +55,7 @@
               :label="sel.name"
               :value="sel.id">
             </el-option>
-          </el-select>
+          </el-select> -->
           <el-input-number
             v-else-if="item.number"
             v-model="formModel[item.prop]"
@@ -78,6 +78,12 @@
             <template v-else-if="item.OSType">{{formModel[item.prop] | OSType}}</template>
             <template v-else>{{formModel[item.prop]}}</template>
           </div>
+          <el-input
+            v-else-if="item.dbclick"
+            v-model="formModel[item.prop]"
+            :placeholder="`请双击选择${item.tit}`"
+            @dblclick.native="$emit(item.dbclick, '')"
+          ></el-input>
           <el-input
             v-else
             v-model="formModel[item.prop]"

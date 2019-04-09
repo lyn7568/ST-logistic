@@ -76,8 +76,7 @@ export default {
         arr: [
           {
             prop: 'orderNumber',
-            tit: '出库单号',
-            fixed: 'left'
+            tit: '出库单号'
           },
           {
             prop: 'batch',
@@ -210,7 +209,7 @@ export default {
     },
     async getlists() {
       let params = {
-        page: this.tableObjectFirst.page,
+        page: this.tableObjectFirst.pageNo,
         pageSize: this.tableObjectFirst.pageSize,
         orderNumber: this.formObject.model.orderNumber,
         type: this.formObject.model.type,

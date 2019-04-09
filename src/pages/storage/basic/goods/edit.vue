@@ -1,18 +1,23 @@
 <template>
+<div>
   <el-dialog
     :title="(objId ? '修改': '添加')+ '货物信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"></form-lists>
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"
+      @clickSelectShops="clickSelectShops"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
     </div>
   </el-dialog>
+  <select-shops ref="selectShopsDialog"></select-shops>
+</div>
 </template>
 
 <script>
 import formLists from '@/components/Formlists'
+import selectShops from '@/pages/storage/selectTem/selectShops'
 export default {
   data () {
     return {
@@ -39,7 +44,8 @@ export default {
         {
           prop: 'shopId',
           tit: '所属店铺',
-          select: this.$root.shopArrs,
+          // select: this.$root.shopArrs,
+          dbclick: 'clickSelectShops',
           required: true
         },
         {
@@ -85,10 +91,8 @@ export default {
     }
   },
   components: {
-    formLists
-  },
-  mounted() {
-    console.log(this.$root.shopArrs)
+    formLists,
+    selectShops
   },
   methods: {
     openDiag(val) {
@@ -153,6 +157,9 @@ export default {
           })
         }
       })
+    },
+    clickSelectShops() {
+      this.$refs.selectShopsDialog.openDiag()
     }
   }
 }

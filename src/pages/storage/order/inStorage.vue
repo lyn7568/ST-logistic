@@ -6,20 +6,19 @@
       <div class="flex between search--wrap">
         <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
       </div>
-      <el-tabs v-model="activeName" type="border-card" @tab-click="tabChangeFun">
-        <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
-        </el-tab-pane>
-        <complex-table ref="tableChildObj" v-loading="tableLoading"
+      <el-tabs v-model="activeName" type="border-card">
+        <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index" lazy>
+          <complex-table ref="tableChildObj" v-loading="tableLoading"
             :tableObject="tableObjectFirst"
             @pageCurFun="currentPageChangeFirst"
             @editOpenDialogFun="editOpenDialogFun"
             @approveEvent="approveEvent"
             @deleteEvent="deleteEvent"
             @exportExcel="exportExcel"></complex-table>
-
-        <edit-in-storage ref="infoEditDialog"></edit-in-storage>
-        <approve-in ref="approveDialog"></approve-in>
+        </el-tab-pane>
       </el-tabs>
+      <edit-in-storage ref="infoEditDialog"></edit-in-storage>
+      <approve-in ref="approveDialog"></approve-in>
     </div>
   </div>
 </template>
@@ -54,30 +53,14 @@ export default {
       ],
       tableLoading: false,
       tableObjectFirst: {
-        data: [
-          {
-            orderNumber: '111',
-            status: 2,
-            type: '1'
-          },
-          {
-            orderNumber: '111',
-            status: 1,
-            type: '3'
-          },
-          {
-            orderNumber: '8888',
-            status: 0
-          }
-        ],
+        data: [],
         pageNo: 1,
         total: 0,
         pageSize: 10,
         arr: [
           {
             prop: 'orderNumber',
-            tit: '入库单号',
-            fixed: 'left'
+            tit: '入库单号'
           },
           {
             prop: 'batch',
@@ -191,6 +174,11 @@ export default {
       }
     }
   },
+  watch: {
+    activeName(val) {
+      this.resetInfo()
+    }
+  },
   components: {
     editInStorage,
     complexTable,
@@ -210,7 +198,7 @@ export default {
     },
     async getlists() {
       let params = {
-        page: this.tableObjectFirst.page,
+        page: this.tableObjectFirst.pageNo,
         pageSize: this.tableObjectFirst.pageSize,
         orderNumber: this.formObject.model.orderNumber,
         type: this.formObject.model.type,
@@ -222,17 +210,13 @@ export default {
 
       if(data.code == 1) {
         this.tableObjectFirst.data = result.result;
-        this.tableObjectFirst.total = result.total_page * this.tableObjectFirst.pageSize;
+        this.tableObjectFirst.total = result.total;
       } else {
         this.tableObjectFirst.data = [];
       }
     },
     search(){
       this.resetInfo()
-    },
-    tabChangeFun(tab, event) {
-      this.activeName = tab.name
-      this.getlists()
     },
     resetInfo() {
       this.tableObjectFirst.data = []
