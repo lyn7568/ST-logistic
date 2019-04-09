@@ -1,167 +1,287 @@
 
 <template>
   <div class="List-page">
-    <MyTitle text = "出库记录"></MyTitle>
+    <MyTitle text = "出库管理"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input" @change="getlists"></el-input>
+        <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
       </div>
-      
-      <el-table
-        :data="tableData"
-        stripe
-        style="width: 100%">
-        <el-table-column
-          type="index"
-          align = "center"
-          :index = "(i) => i >=9 ? (i + 1) : `0${ i + 1 }`"
-          label = "序号"
-          width="80">
-        </el-table-column>
-        <el-table-column
-          label="店铺名称"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="店铺编号"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.number }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="店铺地址"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.address }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="店铺描述"
-          align = "center"
-          width="240">
-          <template slot-scope="scope">
-            <span >{{ scope.row.describe || "无" }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align = "center"
-          >
-          <template slot-scope="scope">
-            <div class="option--btns flex-center">
-              <div class="option--btn" @click  = "edit(scope.row, scope)">修改</div>
-              <div class="option--btn" @click  = "delConfirm(scope.row)">删除</div>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-tabs v-model="activeName" type="border-card" @tab-click="tabChangeFun">
+        <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
+        </el-tab-pane>
+        <complex-table ref="tableChildObj" v-loading="tableLoading"
+            :tableObject="tableObjectFirst"
+            @pageCurFun="currentPageChangeFirst"
+            @editOpenDialogFun="editOpenDialogFun"
+            @approveEvent="approveEvent"
+            @deleteEvent="deleteEvent"
+            @exportExcel="exportExcel"></complex-table>
 
-      <div class="flex-center foot--pagination">
-        <el-pagination
-          background
-          @current-change = "changePage"
-          :current-page = "page"
-          layout='prev, pager, next, jumper, ->'
-          :total="total">
-        </el-pagination>
-      </div>
-      <EditShop :show.sync = "show" :obj = "obj" @close = "close" :nowIndex = "nowIndex"></EditShop>
+        <edit-out-storage ref="infoEditDialog"></edit-out-storage>
+        <approve-out ref="approveDialog"></approve-out>
+      </el-tabs>
     </div>
   </div>
 </template>
 
 <script>
-import EditShop from '@/components/modals/EditShop'
-
+import complexTable from '@/components/ComplexTable'
+import filterForm from '@/components/FilterForm'
+import editOutStorage from './editOut'
+import approveOut from './approveOut'
+import { slelectOutStorageType } from '@/util/dict'
 export default {
-  components: {
-    EditShop
-  },
   data () {
     return {
-      show: false,
-      obj: {},
-      tableData: [],
-
-      page: 1,
-      pageSize: 10,
-      total: 0,
-      searchText: '',
-      nowIndex: 0,
+      activeName: '3',
+      tabList: [
+        {
+          tab: '3',
+          name: '所有'
+        },
+        {
+          tab: '0',
+          name: '待审批'
+        },
+        {
+          tab: '1',
+          name: '已通过'
+        },
+        {
+          tab: '2',
+          name: '未通过'
+        }
+      ],
+      tableLoading: false,
+      tableObjectFirst: {
+        data: [
+          {
+            orderNumber: '111',
+            status: 2,
+            type: '1'
+          },
+          {
+            orderNumber: '111',
+            status: 1,
+            type: '3'
+          },
+          {
+            orderNumber: '8888',
+            status: 0
+          }
+        ],
+        pageNo: 1,
+        total: 0,
+        pageSize: 10,
+        arr: [
+          {
+            prop: 'orderNumber',
+            tit: '出库单号',
+            fixed: 'left'
+          },
+          {
+            prop: 'batch',
+            tit: '批次'
+          },
+          {
+            prop: 'productName',
+            tit: '货物名称'
+          },
+          {
+            prop: 'operationAmount',
+            tit: '数量'
+          },
+          {
+            prop: 'warehouseName',
+            tit: '所属仓库'
+          },
+          {
+            prop: 'areaName',
+            tit: '所属库区'
+          },
+          {
+            prop: 'locationName',
+            tit: '所属货位'
+          },
+          {
+            prop: 'type',
+            tit: '出库类型',
+            OSType: true
+          },
+          {
+            prop: 'supplieName',
+            tit: '供应商'
+          },
+          {
+            prop: 'status',
+            tit: '状态',
+            sTag: true
+          },
+          {
+            prop: 'approverName',
+            tit: '审批人'
+          },
+          {
+            prop: 'approverDate',
+            tit: '审批时间'
+          },
+          {
+            prop: 'reason',
+            tit: '操作理由'
+          },
+          {
+            prop: 'operationDate',
+            tit: '出库时间'
+          },
+          {
+            operate: true,
+            tit: '操作',
+            width: 200,
+            fixed: 'right'
+          }
+        ],
+        hFun: [
+          {
+            text: '编辑',
+            event: 'editOpenDialogFun'
+          },
+          {
+            text: '审批',
+            event: 'approveEvent'
+          }
+        ],
+        oFun: [
+          {
+            text: '删除',
+            event: 'deleteEvent'
+          },
+          {
+            text: '导出',
+            event: 'exportExcel'
+          }
+        ]
+      },
+      formObject: {
+        ref: 'formObject',
+        model: {
+          orderNumber: '',
+          type: ''
+        },
+        arr: [
+          {
+            prop: 'orderNumber',
+            tit: '出库单号'
+          },
+          {
+            prop: 'type',
+            tit: '出库类型',
+            select: slelectOutStorageType
+          }
+        ],
+        oFun: [
+          {
+            name: '新增',
+            event: 'addOpenDialogFun'
+          },
+          {
+            name: '查询',
+            event: 'search'
+          }
+        ]
+      }
     }
   },
+  components: {
+    editOutStorage,
+    complexTable,
+    filterForm,
+    approveOut
+  },
   methods: {
-    changePage(page) {
-      this.page = page;
-      this.getlists();
+    currentPageChangeFirst(val) {
+      this.tableObjectFirst.pageNo = val
+      this.getlists()
+    },
+    editOpenDialogFun(val) {
+      this.$refs.infoEditDialog.openDiag(val)
+    },
+    addOpenDialogFun() {
+      this.$refs.infoEditDialog.openDiag()
     },
     async getlists() {
       let params = {
-        page: this.page,
-        pageSize: this.pageSize,
-        name: this.searchText,
+        page: this.tableObjectFirst.page,
+        pageSize: this.tableObjectFirst.pageSize,
+        orderNumber: this.formObject.model.orderNumber,
+        type: this.formObject.model.type,
+        status: parseInt(this.activeName) || ''
       }
 
-      let { data } = await this.$http.post('/logistics/user/getUserPageList.do', params),
+      let { data } = await this.$http.post('/operation/comeList', params),
           result = data.result;
 
       if(data.code == 1) {
-        this.tableData = result.result;
-        this.total = result.total_page * this.pageSize;
+        this.tableObjectFirst.data = result.result;
+        this.tableObjectFirst.total = result.total_page * this.tableObjectFirst.pageSize;
       } else {
-        this.tableData = [];
+        this.tableObjectFirst.data = [];
       }
     },
-    edit(obj, scope) {
-      this.obj = Object.assign({}, obj);
-      this.show = true;
-      this.nowIndex = scope.$index;
+    search(){
+      this.resetInfo()
     },
-    close(obj) {
-      this.show = false;
-      if(obj) {
-        let index = this.nowIndex,
-            lists = [ ...this.tableData ];
-        lists[index] = obj;
-        this.tableData = lists;
-      }
-
+    tabChangeFun(tab, event) {
+      this.activeName = tab.name
+      this.getlists()
     },
-    delConfirm(obj) {
-      let { id } = obj;
+    resetInfo() {
+      this.tableObjectFirst.data = []
+      this.tableObjectFirst.pageNo = 1
+      this.tableObjectFirst.total = 0
+      this.getlists()
+    },
+    deleteEvent(val) {
       this.$confirm('此操作有风险, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.del(obj);
-      }).catch((err) => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });          
-      });
+        this.del(val.id)
+      }).catch()
     },
-    async del(obj) {
-      let { id, roleId } = obj,
-          { page, pageSize } = this;
-
-      let params = { id, page, pageSize, roleId };
-
-      let { data } = await this.$http.post('/logistics/user/delete.do', params);
+    async del(id) {
+      let { data } = await this.$http.post('/operation/deleteOut', { id:id });
 
       this.showMsg(data);
 
       if(data.code == 1) {
-        this.getlists();
+        this.resetInfo();
       }
+    },
+    approveEvent(val) {
+      this.$refs.approveDialog.openDiag(val)
+    },
+    exportExcel(row) {
+      import('@/vendor/Export2Excel').then(excel => {
+        const arr = this.tableObjectFirst.arr
+        const tHeader = []
+        const filterVal = []
+        arr.map(item => {
+          tHeader.push(item.tit)
+          filterVal.push(item.prop)
+        })
+        let list = []
+        list.push(row)
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: new Date().Format('yyyyMMddhhmmss') + '_出库单'
+        })
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        return v[j]
+      }))
     }
   },
   created() {
@@ -171,7 +291,5 @@ export default {
 </script>
 
 <style scoped lang='scss'>
-.foot--pagination {
-  margin: .24rem 0;
-}
+
 </style>

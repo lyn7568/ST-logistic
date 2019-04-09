@@ -34,15 +34,28 @@
             <div v-else-if="item.wType">{{scope.row[item.prop] | wType }}</div>
             <div v-else-if="item.aType">{{scope.row[item.prop] | aType }}</div>
             <div v-else-if="item.lType">{{scope.row[item.prop] | lType }}</div>
+            <div v-else-if="item.ISType">{{scope.row[item.prop] | ISType }}</div>
+            <el-tag v-else-if="item.sTag" :type="tagType(scope.row[item.prop], true)">{{tagType(scope.row[item.prop])}}</el-tag>
             <div v-else>{{scope.row[item.prop]}}</div>
           </template>
           <template v-if="item.operate && typeof scope.row === 'object'">
-            <el-button
-              type="text"
-              v-for="operate in tableObject.oFun"
-              :key="operate.index"
-              @click="$emit(operate.event, scope.row)"
-            >{{operate.text}}</el-button>
+            <template v-if="tableObject.hFun">
+              <el-button
+                type="text"
+                v-show="scope.row.status===0 || scope.row.status===2"
+                v-for="operate in tableObject.hFun"
+                :key="operate.index"
+                @click="$emit(operate.event, scope.row)"
+              >{{operate.text}}</el-button>
+            </template>
+            <template v-if="tableObject.oFun">
+              <el-button
+                type="text"
+                v-for="operate in tableObject.oFun"
+                :key="operate.index"
+                @click="$emit(operate.event, scope.row)"
+              >{{operate.text}}</el-button>
+            </template>
           </template>
         </template>
       </el-table-column>
@@ -85,6 +98,16 @@ export default {
     },
     tableThClassName({ row, rowIndex }) {
       return 'even-row';
+    },
+    tagType(val, f) {
+      switch(val) {
+        case 0:
+          return f ? 'warning' : '待审批'
+        case 1:
+          return f ? 'success' : '已通过'
+        case 2:
+          return f ? 'danger' : '未通过'
+      }
     }
   }
 };

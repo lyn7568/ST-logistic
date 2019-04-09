@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import {slelectDeportType,slelectAreaType,slelectLocationType} from './dict.js'
+import {slelectDeportType,slelectAreaType,slelectLocationType,slelectInStorageType,slelectOutStorageType} from './dict.js'
 
 function leftPad(str) {
 	return str >= 10 ? str : ("0" + str);
@@ -50,6 +50,20 @@ Vue.filter('aType', function (value) {
 // 货位类型
 Vue.filter('lType', function (value) {
   let w = slelectLocationType.find(item => {
+    return item.id === value
+  })
+  return w.name
+});
+// 入库类型
+Vue.filter('ISType', function (value) {
+  let w = slelectInStorageType.find(item => {
+    return item.id === value
+  })
+  return w.name
+});
+// 出库类型
+Vue.filter('OSType', function (value) {
+  let w = slelectOutStorageType.find(item => {
     return item.id === value
   })
   return w.name

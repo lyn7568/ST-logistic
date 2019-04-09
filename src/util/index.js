@@ -31,7 +31,6 @@ var mypath = {
     return '.' + s.split('.')[1];
   }
 }
-
 export {
   copy,
   mypath

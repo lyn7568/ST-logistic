@@ -1,9 +1,10 @@
 <template>
   <el-dialog
-    :title="(objId ? '修改': '添加')+ '货物信息'"
+    :title="(objId ? '修改': '添加')+ '出库信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"></form-lists>
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"
+    :remoteOwnerName="this.$root.remoteSupplierList"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
@@ -13,6 +14,7 @@
 
 <script>
 import formLists from '@/components/Formlists'
+import { slelectOutStorageType } from '@/util/dict'
 export default {
   data () {
     return {
@@ -20,99 +22,81 @@ export default {
       dialogFormVisible: false,
       formItem: [
         {
-          prop: 'name',
+          prop: 'batch',
+          tit: '批次',
+          required: true
+        },
+        {
+          prop: 'productId',
           tit: '货物名称',
-          num: 20,
+          required: true,
+          select: this.$root.productArrs
+        },
+        {
+          prop: 'ckq',
+          tit: '仓库/库区/库位',
+          cascader: this.$root.wareHouseAreas,
           required: true
         },
         {
-          prop: 'number',
-          tit: '货物编号',
-          num: 50,
+          prop: 'carrierId',
+          tit: '承运商',
+          select: this.$root.carrierArrs,
           required: true
         },
         {
-          prop: 'factoryNumber',
-          tit: '厂商编码',
-          required: true
+          prop: 'type',
+          tit: '出库类型',
+          required: true,
+          select: slelectOutStorageType
         },
         {
-          prop: 'shopId',
-          tit: '所属店铺',
-          select: this.$root.shopArrs,
-          required: true
-        },
-        {
-          prop: 'classificationId',
-          tit: '所属分类',
-          select: this.$root.classifications,
-          required: true
-        },
-        {
-          prop: 'price',
-          tit: '单价',
-          num: 15,
-          required: true
-        },
-        {
-          prop: 'standard',
-          tit: '规格',
-          num: 3000
-        },
-        {
-          prop: 'place',
-          tit: '产地',
-          num: 15
-        },
-        {
-          prop: 'amount',
-          tit: '数量',
-          number: true,
-          required: true
+          prop: 'operationAmount',
+          tit: '出库数量',
+          required: true,
+          number: true
         }
       ],
       formObj: {
-        name: '',
-        number: '',
-        classificationId: '',
-        factoryNumber: '',
-        shopId: '',
-        price: '',
-        standard: '',
-        place: '',
-        amount: 0
+        batch: '',
+        ckq: [],
+        supplierId: '',
+        type: '',
+        productId: '',
+        operationAmount: 0
       }
     }
   },
   components: {
     formLists
   },
-  mounted() {
-    console.log(this.$root.shopArrs)
-  },
   methods: {
     openDiag(val) {
       var that = this
       if (val) {
         this.objId = val.id
+        val.ckq = []
+        val.ckq.push(val.warehouseId)
+        val.ckq.push(val.areaId)
+        val.ckq.push(val.locationId)
         this.formObj = val
       } else {
         this.objId = ''
         this.formObj = {
-          name: '',
-          number: '',
-          classificationId: '',
-          factoryNumber: '',
-          shopId: '',
-          price: '',
-          standard: '',
-          place: '',
-          amount: 0
+          batch: '',
+          ckq: [],
+          supplierId: '',
+          type: '',
+          productId: '',
+          operationAmount: 0
         }
       }
       setTimeout(() => {
         that.dialogFormVisible = true
       }, 1)
+    },
+    changeIfUse(val) {
+      this.formObj.ifUse = Number(!val)
     },
     closeDialog() {
       this.$refs['showForm'].$refs['formObj'].clearValidate()
@@ -122,21 +106,23 @@ export default {
       var that = this
       this.$refs['showForm'].$refs['formObj'].validate(valid => {
         if (valid) {
+          let wid = '', aid = ''
+          if (this.formObj.ckq){
+            wid = this.formObj.ckq[0]
+            aid = this.formObj.ckq[1]
+          }
           var params = {
             name: this.formObj.name,
             number: this.formObj.number,
-            classificationId: this.formObj.classificationId,
-            factoryNumber: this.formObj.factoryNumber,
-            shopId: this.formObj.shopId,
-            price: this.formObj.price,
-            standard: this.formObj.standard,
-            place: this.formObj.place,
-            amount: this.formObj.amount
+            remark: this.formObj.remark,
+            areaId: aid,
+            type: this.formObj.type,
+            ifUse: this.formObj.ifUse
           };
           if (that.objId) {
             params = Object.assign(params, {id: that.objId})
           }
-          this.$http.post('/product/save', params)
+          this.$http.post('/operation/outSave', params)
           .then(({ data }) => {
             this.showMsg(data);
             if(data.code == 1) {

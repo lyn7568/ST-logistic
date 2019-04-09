@@ -30,11 +30,23 @@ new Vue({
       roles: [],
       classifications: [],
       shopArrs: [],
+      supplierArrs: [],
+      carrierArrs: [],
+      productArrs: [],
       wareHouses: [],
       wareHouseAreas: [],
       truckList: [], //车辆
       userList: [], //司机
       entrepotList: [], //配送点
+    }
+  },
+  watch: {
+    classifications(val) {
+      this.classifications = val
+    },
+    shopArrs(val) {
+      console.log(val)
+      this.shopArrs = val
     }
   },
   methods: {
@@ -84,19 +96,58 @@ new Vue({
         this.shopArrs = data.result.result;
       }
     },
+    async getSuppliers() {
+      let { data } = await this.$http.post('/supplier/list', {
+        page: 1,
+        pageSize: 1000
+       });
+      if(data.code == 1) {
+        this.supplierArrs = data.result.result;
+      }
+    },
+    async getCarriers() {
+      let { data } = await this.$http.post('/carrier/list', {
+        page: 1,
+        pageSize: 1000
+       });
+      if(data.code == 1) {
+        this.carrierArrs = data.result.result;
+      }
+    },
+    async getProducts() {
+      let { data } = await this.$http.post('/product/list', {
+        page: 1,
+        pageSize: 1000
+       });
+      if(data.code == 1) {
+        this.productArrs = data.result.result;
+      }
+    },
     async getWareHouses() {
       let { data } = await this.$http.get('/warehouse/getAllWarehouse', { });
       if(data.code == 1) {
         this.wareHouses = data.result;
-        for(let i = 0; i < data.result.length; ++i) {
-          this.getWareHousesArea(data.result[i])
-        }
         this.wareHouseAreas = data.result;
+        for(let i = 0; i < this.wareHouseAreas.length; ++i) {
+          this.getWareHousesArea(this.wareHouseAreas[i])
+        }
       }
     },
     async getWareHousesArea(obj) {
       let { data } = await this.$http.post('/warehouse/getAreaByWarehouseId', {
         warehouseId: obj.id
+      });
+      if(data.code == 1) {
+        obj.result = data.result
+        var mm =  data.result
+        for(let i = 0; i < mm.length; ++i) {
+          this.getAreasLocation(mm[i])
+        }
+      }
+    },
+    async getAreasLocation(obj) {
+      let { data } = await this.$http.post('/warehouse/getLocationByAreaId', {
+        areaId: obj.id
       });
       if(data.code == 1) {
         obj.result = data.result
@@ -117,6 +168,9 @@ new Vue({
     this.getRoles();
     this.getClassificationss();
     this.getShops();
+    this.getSuppliers();
+    this.getCarriers();
+    this.getProducts();
     this.getWareHouses();
     this.initData();
   },

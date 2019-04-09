@@ -4,21 +4,21 @@
     <MyTitle text = "入库管理"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <div>
-          <el-input v-model="searchText" placeholder="请输入入库单号内容" clearable class="search--input"></el-input>
-        </div>
-        <div class = "flex between list--btn__wrap">
-          <div class="list--btn color--btn">搜索</div>
-          <div class="list--btn color--btn" @click="addEvent">添加</div>
-        </div>
+        <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
       </div>
-      <el-tabs v-model="activeName" type="border-card">
+      <el-tabs v-model="activeName" type="border-card" @tab-click="tabChangeFun">
         <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
         </el-tab-pane>
         <complex-table ref="tableChildObj" v-loading="tableLoading"
             :tableObject="tableObjectFirst"
             @pageCurFun="currentPageChangeFirst"
-            @pageSizeFun="pageSizeChangeFirst"></complex-table>
+            @editOpenDialogFun="editOpenDialogFun"
+            @approveEvent="approveEvent"
+            @deleteEvent="deleteEvent"
+            @exportExcel="exportExcel"></complex-table>
+
+        <edit-in-storage ref="infoEditDialog"></edit-in-storage>
+        <approve-in ref="approveDialog"></approve-in>
       </el-tabs>
     </div>
   </div>
@@ -26,10 +26,13 @@
 
 <script>
 import complexTable from '@/components/ComplexTable'
+import filterForm from '@/components/FilterForm'
+import editInStorage from './editIn'
+import approveIn from './approveIn'
+import { slelectInStorageType } from '@/util/dict'
 export default {
   data () {
     return {
-      searchText: '',
       activeName: '3',
       tabList: [
         {
@@ -51,99 +54,170 @@ export default {
       ],
       tableLoading: false,
       tableObjectFirst: {
-        data: [],
+        data: [
+          {
+            orderNumber: '111',
+            status: 2,
+            type: '1'
+          },
+          {
+            orderNumber: '111',
+            status: 1,
+            type: '3'
+          },
+          {
+            orderNumber: '8888',
+            status: 0
+          }
+        ],
         pageNo: 1,
         total: 0,
         pageSize: 10,
         arr: [
           {
-            prop: 'id',
+            prop: 'orderNumber',
             tit: '入库单号',
             fixed: 'left'
           },
           {
-            prop: 'name',
+            prop: 'batch',
+            tit: '批次'
+          },
+          {
+            prop: 'productName',
             tit: '货物名称'
           },
           {
-            prop: 'number',
-            tit: '货物编号'
-          },
-          {
-            prop: 'classify',
-            tit: '货物类别'
-          },
-          {
-            prop: 'shop',
-            tit: '所属店铺'
-          },
-          {
-            prop: 'price',
-            tit: '单价'
-          },
-          {
-            prop: 'standard',
-            tit: '规格'
-          },
-          {
-            prop: 'place',
-            tit: '产地'
-          },
-          {
-            prop: 'amount',
+            prop: 'operationAmount',
             tit: '数量'
           },
           {
-            prop: 'fileIds',
-            tit: '图片'
+            prop: 'warehouseName',
+            tit: '所属仓库'
+          },
+          {
+            prop: 'areaName',
+            tit: '所属库区'
+          },
+          {
+            prop: 'locationName',
+            tit: '所属货位'
+          },
+          {
+            prop: 'type',
+            tit: '入库类型',
+            ISType: true
+          },
+          {
+            prop: 'supplieName',
+            tit: '供应商'
           },
           {
             prop: 'status',
-            tit: '状态'
+            tit: '状态',
+            sTag: true
           },
           {
             prop: 'approverName',
             tit: '审批人'
           },
           {
-            prop: 'operationDate',
+            prop: 'approverDate',
             tit: '审批时间'
+          },
+          {
+            prop: 'reason',
+            tit: '操作理由'
+          },
+          {
+            prop: 'operationDate',
+            tit: '入库时间'
           },
           {
             operate: true,
             tit: '操作',
+            width: 200,
             fixed: 'right'
           }
         ],
-        oFun: [
+        hFun: [
           {
             text: '编辑',
-            event: 'editEvent'
+            event: 'editOpenDialogFun'
           },
           {
             text: '审批',
             event: 'approveEvent'
-          },
+          }
+        ],
+        oFun: [
           {
             text: '删除',
             event: 'deleteEvent'
+          },
+          {
+            text: '导出',
+            event: 'exportExcel'
+          }
+        ]
+      },
+      formObject: {
+        ref: 'formObject',
+        model: {
+          orderNumber: '',
+          type: ''
+        },
+        arr: [
+          {
+            prop: 'orderNumber',
+            tit: '入库单号'
+          },
+          {
+            prop: 'type',
+            tit: '入库类型',
+            select: slelectInStorageType
+          }
+        ],
+        oFun: [
+          {
+            name: '新增',
+            event: 'addOpenDialogFun'
+          },
+          {
+            name: '查询',
+            event: 'search'
           }
         ]
       }
     }
   },
   components: {
-    complexTable
+    editInStorage,
+    complexTable,
+    filterForm,
+    approveIn
   },
   methods: {
-    async queryInfoList() {
+    currentPageChangeFirst(val) {
+      this.tableObjectFirst.pageNo = val
+      this.getlists()
+    },
+    editOpenDialogFun(val) {
+      this.$refs.infoEditDialog.openDiag(val)
+    },
+    addOpenDialogFun() {
+      this.$refs.infoEditDialog.openDiag()
+    },
+    async getlists() {
       let params = {
         page: this.tableObjectFirst.page,
         pageSize: this.tableObjectFirst.pageSize,
-        name: this.searchText,
+        orderNumber: this.formObject.model.orderNumber,
+        type: this.formObject.model.type,
+        status: parseInt(this.activeName) || ''
       }
 
-      let { data } = await this.$http.post('/logistics/user/getUserPageList.do', params),
+      let { data } = await this.$http.post('/operation/comeList', params),
           result = data.result;
 
       if(data.code == 1) {
@@ -153,40 +227,65 @@ export default {
         this.tableObjectFirst.data = [];
       }
     },
-    addEvent() {
-
+    search(){
+      this.resetInfo()
     },
-    deleteEvent(val){
-      var that=this
-      this.$http.post('/user/delete', {
-        id: val.id
-      }, function(res) {
-        if (res.success) {
-          that.$message({
-            message: "删除成功",
-            type: 'success'
-          })
-          that.resetInfo()
-        }
+    tabChangeFun(tab, event) {
+      this.activeName = tab.name
+      this.getlists()
+    },
+    resetInfo() {
+      this.tableObjectFirst.data = []
+      this.tableObjectFirst.pageNo = 1
+      this.tableObjectFirst.total = 0
+      this.getlists()
+    },
+    deleteEvent(val) {
+      this.$confirm('此操作有风险, 是否继续?', '提示', {
+        type: 'warning'
+      }).then(() => {
+        this.del(val.id)
+      }).catch()
+    },
+    async del(id) {
+      let { data } = await this.$http.post('/operation/deleteCome', { id:id });
+
+      this.showMsg(data);
+
+      if(data.code == 1) {
+        this.resetInfo();
+      }
+    },
+    approveEvent(val) {
+      this.$refs.approveDialog.openDiag(val)
+    },
+    exportExcel(row) {
+      import('@/vendor/Export2Excel').then(excel => {
+        const arr = this.tableObjectFirst.arr
+        const tHeader = []
+        const filterVal = []
+        arr.map(item => {
+          tHeader.push(item.tit)
+          filterVal.push(item.prop)
+        })
+        let list = []
+        list.push(row)
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: new Date().Format('yyyyMMddhhmmss') + '_入库单'
+        })
       })
     },
-    pageSizeChangeFirst(val) {
-      this.tableObjectFirst.pageSize = val
-      this.queryInfoList()
-    },
-    currentPageChangeFirst(val) {
-      this.tableObjectFirst.pageNo = val
-      this.queryInfoList()
-    },
-    editOpenDialogFun(val) {
-      this.$refs.openUserUpdateDialog.openDiag(val)
-    },
-    addOpenDialogFun() {
-      this.$refs.openUserAreaDialog.openDiag()
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        return v[j]
+      }))
     }
   },
   created() {
-    this.queryInfoList();
+    this.getlists();
   }
 }
 </script>

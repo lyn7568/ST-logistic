@@ -1,167 +1,196 @@
 
 <template>
   <div class="List-page">
-    <MyTitle text = "出库记录"></MyTitle>
+    <MyTitle text = "库存盘点"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <el-input v-model="searchText" placeholder="请输入内容" clearable class="search--input" @change="getlists"></el-input>
+        <filter-form :formObject="formObject" @exportExcel="exportExcel" @search="search"></filter-form>
       </div>
-      
-      <el-table
-        :data="tableData"
-        stripe
-        style="width: 100%">
-        <el-table-column
-          type="index"
-          align = "center"
-          :index = "(i) => i >=9 ? (i + 1) : `0${ i + 1 }`"
-          label = "序号"
-          width="80">
-        </el-table-column>
-        <el-table-column
-          label="店铺名称"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.name }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="店铺编号"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.number }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="店铺地址"
-          align = "center"
-          width="120">
-          <template slot-scope="scope">
-            <span >{{ scope.row.address }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="店铺描述"
-          align = "center"
-          width="240">
-          <template slot-scope="scope">
-            <span >{{ scope.row.describe || "无" }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          align = "center"
-          >
-          <template slot-scope="scope">
-            <div class="option--btns flex-center">
-              <div class="option--btn" @click  = "edit(scope.row, scope)">修改</div>
-              <div class="option--btn" @click  = "delConfirm(scope.row)">删除</div>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
-
-      <div class="flex-center foot--pagination">
-        <el-pagination
-          background
-          @current-change = "changePage"
-          :current-page = "page"
-          layout='prev, pager, next, jumper, ->'
-          :total="total">
-        </el-pagination>
-      </div>
-      <EditShop :show.sync = "show" :obj = "obj" @close = "close" :nowIndex = "nowIndex"></EditShop>
+      <complex-table ref="tableChildObj" v-loading="tableLoading"
+            :tableObject="tableObjectFirst"
+            @pageCurFun="currentPageChangeFirst"></complex-table>
     </div>
   </div>
 </template>
 
 <script>
-import EditShop from '@/components/modals/EditShop'
+import complexTable from '@/components/ComplexTable'
+import filterForm from '@/components/FilterForm'
 
 export default {
   components: {
-    EditShop
+    complexTable,
+    filterForm
   },
   data () {
     return {
-      show: false,
-      obj: {},
-      tableData: [],
-
-      page: 1,
-      pageSize: 10,
-      total: 0,
-      searchText: '',
-      nowIndex: 0,
+      tableLoading: false,
+      tableObjectFirst: {
+        data: [],
+        pageNo: 1,
+        total: 0,
+        pageSize: 10,
+        arr: [
+          {
+            prop: 'name',
+            tit: '货物名称'
+          },
+          {
+            prop: 'number',
+            tit: '货物编号'
+          },
+          {
+            prop: 'classificationName',
+            tit: '所属分类'
+          },
+          {
+            prop: 'factoryNumber',
+            tit: '厂商编码'
+          },
+          {
+            prop: 'shopName',
+            tit: '所属店铺'
+          },
+          {
+            prop: 'price',
+            tit: '单价'
+          },
+          {
+            prop: 'standard',
+            tit: '规格'
+          },
+          {
+            prop: 'place',
+            tit: '产地'
+          },
+          {
+            prop: 'amount',
+            tit: '数量'
+          },
+          {
+            prop: 'totalPrice',
+            tit: '总价'
+          },
+          {
+            prop: 'createDateTime',
+            tit: '创建时间'
+          }
+        ],
+        oFun: []
+      },
+      formObject: {
+        ref: 'formObject',
+        model: {
+          name: '',
+          number: ''
+        },
+        arr: [
+          {
+            prop: 'name',
+            tit: '货物名称'
+          },
+          {
+            prop: 'number',
+            tit: '货物编号'
+          },
+          {
+            prop: 'ckq',
+            tit: '仓库/库区',
+            cascader: this.$root.wareHouseAreas
+          }
+        ],
+        oFun: [
+          {
+            name: '导出',
+            event: 'exportExcel'
+          },
+          {
+            name: '查询',
+            event: 'search'
+          }
+        ]
+      }
     }
   },
   methods: {
-    changePage(page) {
-      this.page = page;
-      this.getlists();
+    currentPageChangeFirst(val) {
+      this.tableObjectFirst.pageNo = val
+      this.getlists()
     },
     async getlists() {
+      this.tableLoading = true
+      let wid = '', aid = ''
+      if (this.formObject.model.ckq){
+        wid = this.formObject.model.ckq[0]
+        aid = this.formObject.model.ckq[1]
+      }
       let params = {
-        page: this.page,
-        pageSize: this.pageSize,
-        name: this.searchText,
+        page: this.tableObjectFirst.pageNo,
+        pageSize: this.tableObjectFirst.pageSize,
+        name: this.formObject.model.name,
+        number: this.formObject.model.number,
+        warehouseId: wid,
+        areaId: aid
       }
 
-      let { data } = await this.$http.post('/logistics/user/getUserPageList.do', params),
-          result = data.result;
-
+      let { data } = await this.$http.post('/product/list', params),
+          res = data.result;
       if(data.code == 1) {
-        this.tableData = result.result;
-        this.total = result.total_page * this.pageSize;
+        this.tableLoading = false
+        this.tableObjectFirst.data = res.result;
+        this.tableObjectFirst.total = res.total;
       } else {
+        this.tableLoading = false
         this.tableData = [];
       }
     },
-    edit(obj, scope) {
-      this.obj = Object.assign({}, obj);
-      this.show = true;
-      this.nowIndex = scope.$index;
+    search(){
+      this.resetInfo()
     },
-    close(obj) {
-      this.show = false;
-      if(obj) {
-        let index = this.nowIndex,
-            lists = [ ...this.tableData ];
-        lists[index] = obj;
-        this.tableData = lists;
-      }
-
+    resetInfo() {
+      this.tableObjectFirst.data = []
+      this.tableObjectFirst.pageNo = 1
+      this.tableObjectFirst.total = 0
+      this.getlists()
     },
-    delConfirm(obj) {
-      let { id } = obj;
+    deleteEvent(val) {
       this.$confirm('此操作有风险, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.del(obj);
-      }).catch((err) => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });          
-      });
+        this.del(val.id)
+      }).catch()
     },
-    async del(obj) {
-      let { id, roleId } = obj,
-          { page, pageSize } = this;
-
-      let params = { id, page, pageSize, roleId };
-
-      let { data } = await this.$http.post('/logistics/user/delete.do', params);
+    async del(id) {
+      let { data } = await this.$http.post('/product/delete', { id:id });
 
       this.showMsg(data);
 
       if(data.code == 1) {
-        this.getlists();
+        this.resetInfo();
       }
+    },
+    exportExcel() {
+      import('@/vendor/Export2Excel').then(excel => {
+        const arr = this.tableObjectFirst.arr
+        const tHeader = []
+        const filterVal = []
+        arr.map(item => {
+          tHeader.push(item.tit)
+          filterVal.push(item.prop)
+        })
+        const list = this.tableObjectFirst.data
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: new Date().Format('yyyyMMddhhmmss') + '_库存盘点'
+        })
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        return v[j]
+      }))
     }
   },
   created() {
@@ -169,9 +198,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang='scss'>
-.foot--pagination {
-  margin: .24rem 0;
-}
-</style>

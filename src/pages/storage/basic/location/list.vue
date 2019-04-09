@@ -153,7 +153,7 @@ export default {
         number: this.formObject.model.number,
         type: this.formObject.model.type,
         warehouseId: wid,
-        areaId: aid,
+        areaId: aid
       }
       let { data } = await this.$http.post('/warehouse/locationList', params),
           res = data.result;

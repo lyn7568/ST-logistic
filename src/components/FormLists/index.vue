@@ -43,6 +43,19 @@
               :value="sel.id">
             </el-option>
           </el-select>
+          <el-select
+            v-else-if="item.searchSelect"
+            v-model="formModel[item.prop]"
+            :placeholder="item.tit"
+            clearable filterable remote
+            :remote-method="remoteOwnerName">
+            <el-option
+              v-for="sel in item.searchSelect"
+              :key="sel.id"
+              :label="sel.name"
+              :value="sel.id">
+            </el-option>
+          </el-select>
           <el-input-number
             v-else-if="item.number"
             v-model="formModel[item.prop]"
@@ -60,6 +73,11 @@
             v-model="formModel[item.prop]"
             :placeholder="'请选择'+item.tit">
           </el-cascader>
+          <div v-else-if="item.onlyShow">
+            <template v-if="item.ISType">{{formModel[item.prop] | ISType}}</template>
+            <template v-else-if="item.OSType">{{formModel[item.prop] | OSType}}</template>
+            <template v-else>{{formModel[item.prop]}}</template>
+          </div>
           <el-input
             v-else
             v-model="formModel[item.prop]"
@@ -82,6 +100,10 @@
       },
       formItem: {
         type: Array
+      },
+      remoteOwnerName: {
+        type: Function,
+        default: function() {}
       }
     },
     data() {
@@ -89,15 +111,12 @@
        rulesObj: {}
       }
     },
-    components: {
-      // uploadFile
-    },
     created() {
       this.pushRulesFn()
     },
     methods: {
       changeSelected(val) {
-        console.log(val)
+        // console.log(val)
       },
       changeChecked(val) {
         this.$emit('changeIfUse', val)
