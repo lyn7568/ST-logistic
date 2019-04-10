@@ -57,14 +57,14 @@ Vue.filter('lType', function (value) {
 // 入库类型
 Vue.filter('ISType', function (value) {
   let w = slelectInStorageType.find(item => {
-    return item.id === value
+    return item.id == value
   })
   return w.name
 });
 // 出库类型
 Vue.filter('OSType', function (value) {
   let w = slelectOutStorageType.find(item => {
-    return item.id === value
+    return item.id == value
   })
   return w.name
 });

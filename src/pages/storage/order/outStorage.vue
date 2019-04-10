@@ -213,10 +213,10 @@ export default {
         pageSize: this.tableObjectFirst.pageSize,
         orderNumber: this.formObject.model.orderNumber,
         type: this.formObject.model.type,
-        status: parseInt(this.activeName) || ''
+        status: parseInt(this.activeName)
       }
 
-      let { data } = await this.$http.post('/operation/comeList', params),
+      let { data } = await this.$http.post('/operation/outList', params),
           result = data.result;
 
       if(data.code == 1) {

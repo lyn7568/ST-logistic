@@ -8,7 +8,8 @@
     </div>
     <complex-table ref="tableChildObj" v-loading="tableLoading"
       :tableObject="tableObject"
-      @pageCurFun="currentPageChangeFirst"></complex-table>
+      @pageCurFun="currentPageChangeFirst"
+      @checkboxT="checkboxT"></complex-table>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="selectSureSave">提交</div>
       <div class="nocolor--btn" @click="selectDialogVisible=false">取消</div>
@@ -33,6 +34,7 @@ export default {
         pageNo: 1,
         total: 0,
         pageSize: 10,
+        checked: true,
         arr: [
           {
             prop: 'name',
@@ -49,23 +51,9 @@ export default {
           {
             prop: 'des',
             tit: '描述'
-          },
-          {
-            operate: true,
-            tit: '操作',
-            fixed: 'right'
           }
         ],
-        oFun: [
-          {
-            text: '编辑',
-            event: 'editOpenDialogFun'
-          },
-          {
-            text: '删除',
-            event: 'deleteEvent'
-          }
-        ]
+        oFun: []
       },
       formObject: {
         ref: 'formObject',
@@ -84,10 +72,6 @@ export default {
           }
         ],
         oFun: [
-          {
-            name: '新增',
-            event: 'addOpenDialogFun'
-          },
           {
             name: '查询',
             event: 'search'
@@ -139,6 +123,9 @@ export default {
     },
     selectSureSave() {
       console.log(111)
+    },
+    checkboxT(){
+      console.log(222)
     }
   }
 }

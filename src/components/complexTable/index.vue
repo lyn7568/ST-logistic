@@ -8,6 +8,12 @@
       :row-class-name="tableRowClassName"
       :header-row-class-name="tableThClassName"
     >
+      <el-table-column v-if="tableObject.checked"
+        type="selection"
+        width="55"
+        disabled>
+        <!-- :selectable="checkboxT" -->
+      </el-table-column>
       <el-table-column
         type="index"
         align = "center"

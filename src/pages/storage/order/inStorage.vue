@@ -6,16 +6,19 @@
       <div class="flex between search--wrap">
         <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
       </div>
-      <el-tabs v-model="activeName" type="border-card">
-        <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index" lazy>
-          <complex-table ref="tableChildObj" v-loading="tableLoading"
-            :tableObject="tableObjectFirst"
-            @pageCurFun="currentPageChangeFirst"
-            @editOpenDialogFun="editOpenDialogFun"
-            @approveEvent="approveEvent"
-            @deleteEvent="deleteEvent"
-            @exportExcel="exportExcel"></complex-table>
+      <!-- <el-radio-group v-model="activeName" @change="tabClickFun">
+        <el-radio-button v-for="item in tabList" :label="item.tab" :key="item.index">{{item.name}}</el-radio-button>
+      </el-radio-group> -->
+      <el-tabs v-model="activeName" type="border-card" @tab-click="tabClickFun">
+        <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
         </el-tab-pane>
+        <complex-table ref="tableChildObj" v-loading="tableLoading"
+          :tableObject="tableObjectFirst"
+          @pageCurFun="currentPageChangeFirst"
+          @editOpenDialogFun="editOpenDialogFun"
+          @approveEvent="approveEvent"
+          @deleteEvent="deleteEvent"
+          @exportExcel="exportExcel"></complex-table>
       </el-tabs>
       <edit-in-storage ref="infoEditDialog"></edit-in-storage>
       <approve-in ref="approveDialog"></approve-in>
@@ -175,9 +178,9 @@ export default {
     }
   },
   watch: {
-    activeName(val) {
-      this.resetInfo()
-    }
+    // activeName(val) {
+    //   this.resetInfo()
+    // }
   },
   components: {
     editInStorage,
@@ -202,7 +205,7 @@ export default {
         pageSize: this.tableObjectFirst.pageSize,
         orderNumber: this.formObject.model.orderNumber,
         type: this.formObject.model.type,
-        status: parseInt(this.activeName) || ''
+        status: parseInt(this.activeName)
       }
 
       let { data } = await this.$http.post('/operation/comeList', params),
@@ -214,6 +217,9 @@ export default {
       } else {
         this.tableObjectFirst.data = [];
       }
+    },
+    tabClickFun(val) {
+      this.resetInfo()
     },
     search(){
       this.resetInfo()

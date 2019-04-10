@@ -32,81 +32,37 @@ export default {
         pageSize: 10,
         arr: [
           {
-            prop: 'name',
+            prop: 'productName',
             tit: '货物名称'
           },
           {
-            prop: 'number',
+            prop: 'productNumber',
             tit: '货物编号'
           },
           {
-            prop: 'classificationName',
-            tit: '所属分类'
+            prop: 'warehouseName',
+            tit: '所属仓库'
           },
           {
-            prop: 'factoryNumber',
-            tit: '厂商编码'
+            prop: 'areaName',
+            tit: '所属库区'
           },
           {
-            prop: 'shopName',
-            tit: '所属店铺'
-          },
-          {
-            prop: 'price',
-            tit: '单价'
-          },
-          {
-            prop: 'standard',
-            tit: '规格'
-          },
-          {
-            prop: 'place',
-            tit: '产地'
+            prop: 'locationName',
+            tit: '所属货位'
           },
           {
             prop: 'amount',
             tit: '数量'
-          },
-          {
-            prop: 'totalPrice',
-            tit: '总价'
-          },
-          {
-            prop: 'createDateTime',
-            tit: '创建时间'
           }
         ],
         oFun: []
       },
       formObject: {
-        ref: 'formObject',
-        model: {
-          name: '',
-          number: ''
-        },
-        arr: [
-          {
-            prop: 'name',
-            tit: '货物名称'
-          },
-          {
-            prop: 'number',
-            tit: '货物编号'
-          },
-          {
-            prop: 'ckq',
-            tit: '仓库/库区',
-            cascader: this.$root.wareHouseAreas
-          }
-        ],
         oFun: [
           {
             name: '导出',
             event: 'exportExcel'
-          },
-          {
-            name: '查询',
-            event: 'search'
           }
         ]
       }
@@ -119,21 +75,12 @@ export default {
     },
     async getlists() {
       this.tableLoading = true
-      let wid = '', aid = ''
-      if (this.formObject.model.ckq){
-        wid = this.formObject.model.ckq[0]
-        aid = this.formObject.model.ckq[1]
-      }
       let params = {
         page: this.tableObjectFirst.pageNo,
-        pageSize: this.tableObjectFirst.pageSize,
-        name: this.formObject.model.name,
-        number: this.formObject.model.number,
-        warehouseId: wid,
-        areaId: aid
+        pageSize: this.tableObjectFirst.pageSize
       }
 
-      let { data } = await this.$http.post('/product/list', params),
+      let { data } = await this.$http.post('/operation/warehouseProductList', params),
           res = data.result;
       if(data.code == 1) {
         this.tableLoading = false
