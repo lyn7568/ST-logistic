@@ -33,12 +33,8 @@ import { slelectOutStorageType } from '@/util/dict'
 export default {
   data () {
     return {
-      activeName: '3',
+      activeName: '0',
       tabList: [
-        {
-          tab: '3',
-          name: '所有'
-        },
         {
           tab: '0',
           name: '待审批'
@@ -54,22 +50,7 @@ export default {
       ],
       tableLoading: false,
       tableObjectFirst: {
-        data: [
-          {
-            orderNumber: '111',
-            status: 2,
-            type: '1'
-          },
-          {
-            orderNumber: '111',
-            status: 1,
-            type: '3'
-          },
-          {
-            orderNumber: '8888',
-            status: 0
-          }
-        ],
+        data: [],
         pageNo: 1,
         total: 0,
         pageSize: 10,

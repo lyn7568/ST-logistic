@@ -1,19 +1,25 @@
 <template>
+<div>
   <el-dialog
     :title="(objId ? '修改': '添加')+ '入库信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
     <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"
-    :remoteOwnerName="this.$root.remoteSupplierList"></form-lists>
+    @clickSelectProduct="clickSelectProduct" @clickSelectSupplier="clickSelectSupplier"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
-      <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
+      <div class="nocolor--btn" @click="closeDialog">取消</div>
     </div>
   </el-dialog>
+  <select-product ref="selectProductDialog" @selectProductName="selectProductName"></select-product>
+  <select-supplier ref="selectSupplierDialog" @selectSupplierName="selectSupplierName"></select-supplier>
+</div>
 </template>
 
 <script>
 import formLists from '@/components/Formlists'
+import selectProduct from '@/pages/storage/selectTem/selectProduct'
+import selectSupplier from '@/pages/storage/selectTem/selectSupplier'
 import { slelectInStorageType } from '@/util/dict'
 export default {
   data () {
@@ -27,22 +33,24 @@ export default {
           required: true
         },
         {
-          prop: 'productId',
+          prop: 'productName',
           tit: '货物名称',
+          dbclick: 'clickSelectProduct',
           required: true,
-          select: this.$root.productArrs
+          eveWay: 'change'
         },
         {
           prop: 'ckq',
           tit: '仓库/库区/库位',
-          cascader: this.$root.wareHouseAreas,
+          cascader: this.$root.wareHouseAreasThree,
           required: true
         },
         {
-          prop: 'supplierId',
+          prop: 'supplierName',
           tit: '供应商',
-          select: this.$root.supplierArrs,
-          required: true
+          dbclick: 'clickSelectSupplier',
+          required: true,
+          eveWay: 'change'
         },
         {
           prop: 'type',
@@ -61,14 +69,18 @@ export default {
         batch: '',
         ckq: [],
         supplierId: '',
+        supplierName: '',
         type: '',
         productId: '',
+        productName: '',
         operationAmount: 0
       }
     }
   },
   components: {
-    formLists
+    formLists,
+    selectProduct,
+    selectSupplier
   },
   methods: {
     openDiag(val) {
@@ -86,8 +98,10 @@ export default {
           batch: '',
           ckq: [],
           supplierId: '',
+          supplierName: '',
           type: '',
           productId: '',
+          productName: '',
           operationAmount: 0
         }
       }
@@ -106,18 +120,21 @@ export default {
       var that = this
       this.$refs['showForm'].$refs['formObj'].validate(valid => {
         if (valid) {
-          let wid = '', aid = ''
+          let wid = '', aid = '', lid = ''
           if (this.formObj.ckq){
             wid = this.formObj.ckq[0]
             aid = this.formObj.ckq[1]
+            lid = this.formObj.ckq[2]
           }
           var params = {
-            name: this.formObj.name,
-            number: this.formObj.number,
-            remark: this.formObj.remark,
-            areaId: aid,
+            batch: this.formObj.batch,
+            supplierId: this.formObj.supplierId,
             type: this.formObj.type,
-            ifUse: this.formObj.ifUse
+            productId: this.formObj.name,
+            operationAmount: this.formObj.operationAmount,
+            warehouseId: wid,
+            areaId: aid,
+            locationId: lid
           };
           if (that.objId) {
             params = Object.assign(params, {id: that.objId})
@@ -139,6 +156,28 @@ export default {
           })
         }
       })
+    },
+    clickSelectProduct() {
+      let sid = ''
+      if (this.formObj.productId) {
+        sid = this.formObj.productId
+      }
+      this.$refs.selectProductDialog.openDiag(sid)
+    },
+    selectProductName(val) {
+      this.formObj.productName = val.productName
+      this.formObj.productId = val.productId
+    },
+    clickSelectSupplier() {
+      let sid = ''
+      if (this.formObj.supplierId) {
+        sid = this.formObj.supplierId
+      }
+      this.$refs.selectSupplierDialog.openDiag(sid)
+    },
+    selectSupplierName(val) {
+      this.formObj.supplierName = val.name
+      this.formObj.supplierId = val.id
     }
   }
 }

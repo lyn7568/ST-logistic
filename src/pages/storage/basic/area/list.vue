@@ -109,7 +109,7 @@ export default {
           {
             prop: 'warehouseId',
             tit: '所属仓库',
-            select: this.$root.wareHouses
+            select: this.$root.wareHouseAreasTwo
           }
         ],
         oFun: [

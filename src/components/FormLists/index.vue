@@ -43,19 +43,6 @@
               :value="sel.id">
             </el-option>
           </el-select>
-          <!-- <el-select
-            v-else-if="item.searchSelect"
-            v-model="formModel[item.prop]"
-            :placeholder="item.tit"
-            clearable filterable remote
-            :remote-method="remoteOwnerName">
-            <el-option
-              v-for="sel in item.searchSelect"
-              :key="sel.id"
-              :label="sel.name"
-              :value="sel.id">
-            </el-option>
-          </el-select> -->
           <el-input-number
             v-else-if="item.number"
             v-model="formModel[item.prop]"
@@ -80,6 +67,7 @@
           </div>
           <el-input
             v-else-if="item.dbclick"
+            readonly
             v-model="formModel[item.prop]"
             :placeholder="`请双击选择${item.tit}`"
             @dblclick.native="$emit(item.dbclick, '')"
@@ -106,10 +94,6 @@
       },
       formItem: {
         type: Array
-      },
-      remoteOwnerName: {
-        type: Function,
-        default: function() {}
       }
     },
     data() {
@@ -134,7 +118,11 @@
         for (let i = 0; i < formItem.length; ++i) {
           const ru = []
           if (formItem[i].required) {
-            ru.push({ required: true, message: requiredTip(formItem[i].tit), trigger: 'blur' })
+            if (formItem[i].eveWay) {
+              ru.push({ required: true, message: requiredTip(formItem[i].tit), trigger: 'change' })
+            } else {
+              ru.push({ required: true, message: requiredTip(formItem[i].tit), trigger: 'blur' })
+            }
           }
           rulesObj[formItem[i].prop] = ru
         }

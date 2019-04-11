@@ -11,7 +11,7 @@
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
     </div>
   </el-dialog>
-  <select-shops ref="selectShopsDialog"></select-shops>
+  <select-shops ref="selectShopsDialog" @selectShopName="selectShopName"></select-shops>
 </div>
 </template>
 
@@ -42,11 +42,11 @@ export default {
           required: true
         },
         {
-          prop: 'shopId',
+          prop: 'shopName',
           tit: '所属店铺',
-          // select: this.$root.shopArrs,
           dbclick: 'clickSelectShops',
-          required: true
+          required: true,
+          eveWay: 'change'
         },
         {
           prop: 'classificationId',
@@ -82,6 +82,7 @@ export default {
         number: '',
         classificationId: '',
         factoryNumber: '',
+        shopName: '',
         shopId: '',
         price: '',
         standard: '',
@@ -108,6 +109,7 @@ export default {
           classificationId: '',
           factoryNumber: '',
           shopId: '',
+          shopName: '',
           price: '',
           standard: '',
           place: '',
@@ -159,7 +161,15 @@ export default {
       })
     },
     clickSelectShops() {
-      this.$refs.selectShopsDialog.openDiag()
+      let sid = ''
+      if (this.formObj.shopId) {
+        sid = this.formObj.shopId
+      }
+      this.$refs.selectShopsDialog.openDiag(sid)
+    },
+    selectShopName(val) {
+      this.formObj.shopName = val.name
+      this.formObj.shopId = val.id
     }
   }
 }

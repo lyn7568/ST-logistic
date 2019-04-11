@@ -8,13 +8,14 @@
       :row-class-name="tableRowClassName"
       :header-row-class-name="tableThClassName"
     >
-      <el-table-column v-if="tableObject.checked"
+      <!-- <el-table-column v-if="tableObject.checked"
         type="selection"
         width="55"
-        disabled>
-        <!-- :selectable="checkboxT" -->
-      </el-table-column>
-      <el-table-column
+        disabled="true"
+        @select-all="$emit('selectAllFun', e)"
+        @selection-change="$emit('checkedChangeFun', e)">
+      </el-table-column> -->
+      <el-table-column  v-if="!tableObject.checked"
         type="index"
         align = "center"
         :index = "(i) => i >=9 ? (i + 1) : `0${ i + 1 }`"
@@ -28,9 +29,7 @@
         :label="item.tit || ''"
         :width="item.width || ''"
         :fixed="item.fixed|| false"
-        align="center"
-        :className="item.active"
-      >
+        align="center">
         <template slot-scope="scope">
           <template v-if="scope.row.hasOwnProperty(item.prop)">
             <div v-if="item.classifyName">{{scope.row[item.prop] | classifyName }}</div>
@@ -42,6 +41,7 @@
             <div v-else-if="item.lType">{{scope.row[item.prop] | lType }}</div>
             <div v-else-if="item.ISType">{{scope.row[item.prop] | ISType }}</div>
             <el-tag v-else-if="item.sTag" :type="tagType(scope.row[item.prop], true)">{{tagType(scope.row[item.prop])}}</el-tag>
+            <el-radio v-else-if="item.radio" :label="scope.row[item.prop]" v-model="templateRadio" @change.native="getTemplateRow(scope.$index,scope.row)">&nbsp;</el-radio>
             <div v-else>{{scope.row[item.prop]}}</div>
           </template>
           <template v-if="item.operate && typeof scope.row === 'object'">
@@ -51,7 +51,7 @@
                 v-show="scope.row.status===0 || scope.row.status===2"
                 v-for="operate in tableObject.hFun"
                 :key="operate.index"
-                @click="$emit(operate.event, scope.row)"
+                @click="$emit(operate.event, scope.row, scope.$index)"
               >{{operate.text}}</el-button>
             </template>
             <template v-if="tableObject.oFun">
@@ -59,7 +59,7 @@
                 type="text"
                 v-for="operate in tableObject.oFun"
                 :key="operate.index"
-                @click="$emit(operate.event, scope.row)"
+                @click="$emit(operate.event, scope.row, scope.$index)"
               >{{operate.text}}</el-button>
             </template>
           </template>
@@ -85,11 +85,21 @@ export default {
   props: {
     tableObject: {
       type: Object
-    }
+    },
+    templateRadioFather: {}
   },
   data() {
     return {
+      templateRadio: ''
     };
+  },
+  watch: {
+    templateRadioFather(val) {
+      this.templateRadio = val
+    }
+  },
+  created() {
+    this.templateRadio = this.templateRadioFather
   },
   methods: {
     handleCurrentChange(val) {
@@ -114,6 +124,10 @@ export default {
         case 2:
           return f ? 'danger' : '未通过'
       }
+    },
+    getTemplateRow(index, row) {
+      this.$emit('getChangeRadio', row)
+      this.$emit('getTemplateRowInfo', row)
     }
   }
 };

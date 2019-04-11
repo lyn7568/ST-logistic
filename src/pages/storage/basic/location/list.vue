@@ -112,7 +112,7 @@ export default {
           {
             prop: 'ckq',
             tit: '仓库/库区',
-            cascader: this.$root.wareHouseAreas
+            cascader: this.$root.wareHouseAreasTwo
           }
         ],
         oFun: [

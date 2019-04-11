@@ -35,12 +35,8 @@ import { slelectInStorageType } from '@/util/dict'
 export default {
   data () {
     return {
-      activeName: '3',
+      activeName: '0',
       tabList: [
-        {
-          tab: '3',
-          name: '所有'
-        },
         {
           tab: '0',
           name: '待审批'

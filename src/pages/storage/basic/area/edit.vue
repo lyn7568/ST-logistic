@@ -36,7 +36,7 @@ export default {
           prop: 'warehouseId',
           tit: '所属仓库',
           required: true,
-          select: this.$root.wareHouses
+          select: this.$root.wareHouseAreasTwo
         },
         {
           prop: 'type',

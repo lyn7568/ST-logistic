@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="选择所属店铺"
+    title="选择承运商"
     :visible.sync="selectDialogVisible"
     :close-on-click-modal="false">
     <div class="flex between search--wrap">
@@ -45,15 +45,32 @@ export default {
           },
           {
             prop: 'name',
-            tit: '店铺名称'
+            tit: '承运商名称'
           },
           {
             prop: 'number',
-            tit: '店铺编号'
+            tit: '承运商编号'
           },
           {
             prop: 'address',
             tit: '地址'
+          },
+          {
+            prop: 'type',
+            tit: '类型',
+            sType: true
+          },
+          {
+            prop: 'email',
+            tit: '邮箱'
+          },
+          {
+            prop: 'phone',
+            tit: '联系方式'
+          },
+          {
+            prop: 'contacter',
+            tit: '联系人'
           },
           {
             prop: 'des',
@@ -71,11 +88,11 @@ export default {
         arr: [
           {
             prop: 'name',
-            tit: '店铺名称'
+            tit: '承运商名称'
           },
           {
             prop: 'number',
-            tit: '店铺编号'
+            tit: '承运商编号'
           }
         ],
         oFun: [
@@ -112,7 +129,7 @@ export default {
         number: this.formObject.model.number
       }
 
-      let { data } = await this.$http.post('/product/shopList', params),
+      let { data } = await this.$http.post('/carrier/list', params),
           res = data.result;
       if(data.code == 1) {
         this.tableLoading = false
@@ -140,10 +157,10 @@ export default {
     },
     selectSureSave() {
       if (this.radioSelectInfo === '') {
-        this.showWarning('请选择所属店铺')
+        this.showWarning('请选择承运商')
         return
       }
-      this.$emit('selectShopName', this.radioSelectInfo)
+      this.$emit('selectCarrierName', this.radioSelectInfo)
       this.selectDialogVisible = false
     }
   }

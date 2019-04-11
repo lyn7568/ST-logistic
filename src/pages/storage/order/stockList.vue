@@ -7,7 +7,7 @@
         <filter-form :formObject="formObject" @exportExcel="exportExcel" @search="search"></filter-form>
       </div>
       <complex-table ref="tableChildObj" v-loading="tableLoading"
-            :tableObject="tableObjectFirst"
+            :tableObject="tableObject"
             @pageCurFun="currentPageChangeFirst"></complex-table>
     </div>
   </div>
@@ -25,7 +25,7 @@ export default {
   data () {
     return {
       tableLoading: false,
-      tableObjectFirst: {
+      tableObject: {
         data: [],
         pageNo: 1,
         total: 0,
@@ -59,10 +59,35 @@ export default {
         oFun: []
       },
       formObject: {
+        ref: 'formObject',
+        model: {
+          productName: '',
+          productNumber: '',
+          ckq: []
+        },
+        arr: [
+          {
+            prop: 'productName',
+            tit: '货物名称'
+          },
+          {
+            prop: 'productNumber',
+            tit: '货物编号'
+          },
+          {
+            prop: 'ckq',
+            tit: '仓库/库区/货位',
+            cascader: this.$root.wareHouseAreasThree
+          }
+        ],
         oFun: [
           {
             name: '导出',
             event: 'exportExcel'
+          },
+          {
+            name: '查询',
+            event: 'search'
           }
         ]
       }
@@ -70,22 +95,33 @@ export default {
   },
   methods: {
     currentPageChangeFirst(val) {
-      this.tableObjectFirst.pageNo = val
+      this.tableObject.pageNo = val
       this.getlists()
     },
     async getlists() {
       this.tableLoading = true
+      let wid = '', aid = '', lid = ''
+      if (this.formObject.model.ckq){
+        wid = this.formObject.model.ckq[0]
+        aid = this.formObject.model.ckq[1]
+        lid = this.formObject.model.ckq[2]
+      }
       let params = {
-        page: this.tableObjectFirst.pageNo,
-        pageSize: this.tableObjectFirst.pageSize
+        page: this.tableObject.pageNo,
+        pageSize: this.tableObject.pageSize,
+        productName: this.formObject.model.productName,
+        productNumber: this.formObject.model.productNumber,
+        warehouseId: wid,
+        areaId: aid,
+        locationreaId: lid
       }
 
       let { data } = await this.$http.post('/operation/warehouseProductList', params),
           res = data.result;
       if(data.code == 1) {
         this.tableLoading = false
-        this.tableObjectFirst.data = res.result;
-        this.tableObjectFirst.total = res.total;
+        this.tableObject.data = res.result;
+        this.tableObject.total = res.total;
       } else {
         this.tableLoading = false
         this.tableData = [];
@@ -95,9 +131,9 @@ export default {
       this.resetInfo()
     },
     resetInfo() {
-      this.tableObjectFirst.data = []
-      this.tableObjectFirst.pageNo = 1
-      this.tableObjectFirst.total = 0
+      this.tableObject.data = []
+      this.tableObject.pageNo = 1
+      this.tableObject.total = 0
       this.getlists()
     },
     deleteEvent(val) {
@@ -118,14 +154,14 @@ export default {
     },
     exportExcel() {
       import('@/vendor/Export2Excel').then(excel => {
-        const arr = this.tableObjectFirst.arr
+        const arr = this.tableObject.arr
         const tHeader = []
         const filterVal = []
         arr.map(item => {
           tHeader.push(item.tit)
           filterVal.push(item.prop)
         })
-        const list = this.tableObjectFirst.data
+        const list = this.tableObject.data
         const data = this.formatJson(filterVal, list)
         excel.export_json_to_excel({
           header: tHeader,

@@ -15,6 +15,12 @@ export default {
         type: 'error'
       });
     },
+    showWarning(msg) {
+      this.$message({
+        message: msg,
+        type: 'warning'
+      });
+    },
     showMsg(obj) {
       this.$message({
         message: obj.message,

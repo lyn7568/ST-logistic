@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="选择所属店铺"
+    title="选择入库货物"
     :visible.sync="selectDialogVisible"
     :close-on-click-modal="false">
     <div class="flex between search--wrap">
@@ -44,20 +44,28 @@ export default {
             radio: true
           },
           {
-            prop: 'name',
-            tit: '店铺名称'
+            prop: 'productName',
+            tit: '货物名称'
           },
           {
-            prop: 'number',
-            tit: '店铺编号'
+            prop: 'productNumber',
+            tit: '货物编号'
           },
           {
-            prop: 'address',
-            tit: '地址'
+            prop: 'warehouseName',
+            tit: '所属仓库'
           },
           {
-            prop: 'des',
-            tit: '描述'
+            prop: 'areaName',
+            tit: '所属库区'
+          },
+          {
+            prop: 'locationName',
+            tit: '所属货位'
+          },
+          {
+            prop: 'amount',
+            tit: '库存数量'
           }
         ],
         oFun: []
@@ -65,17 +73,23 @@ export default {
       formObject: {
         ref: 'formObject',
         model: {
-          name: '',
-          number: ''
+          productName: '',
+          productNumber: '',
+          ckq: []
         },
         arr: [
           {
-            prop: 'name',
-            tit: '店铺名称'
+            prop: 'productName',
+            tit: '货物名称'
           },
           {
-            prop: 'number',
-            tit: '店铺编号'
+            prop: 'productNumber',
+            tit: '货物编号'
+          },
+          {
+            prop: 'ckq',
+            tit: '仓库/库区/货位',
+            cascader: this.$root.wareHouseAreasThree
           }
         ],
         oFun: [
@@ -105,14 +119,23 @@ export default {
     },
     async getlists() {
       this.tableLoading = true
+      let wid = '', aid = '', lid = ''
+      if (this.formObject.model.ckq){
+        wid = this.formObject.model.ckq[0]
+        aid = this.formObject.model.ckq[1]
+        lid = this.formObject.model.ckq[2]
+      }
       let params = {
         page: this.tableObject.pageNo,
         pageSize: this.tableObject.pageSize,
-        name: this.formObject.model.name,
-        number: this.formObject.model.number
+        productName: this.formObject.model.productName,
+        productNumber: this.formObject.model.productNumber,
+        warehouseId: wid,
+        areaId: aid,
+        locationreaId: lid
       }
 
-      let { data } = await this.$http.post('/product/shopList', params),
+      let { data } = await this.$http.post('/operation/warehouseProductList', params),
           res = data.result;
       if(data.code == 1) {
         this.tableLoading = false
@@ -133,17 +156,17 @@ export default {
       this.getlists()
     },
     getChangeRadio(val) {
-      this.templateRadio = val.id
+      this.templateRadio = val.productId
     },
     getTemplateRowInfo(row) {
       this.radioSelectInfo = row
     },
     selectSureSave() {
       if (this.radioSelectInfo === '') {
-        this.showWarning('请选择所属店铺')
+        this.showWarning('请选择入库货物')
         return
       }
-      this.$emit('selectShopName', this.radioSelectInfo)
+      this.$emit('selectProductName', this.radioSelectInfo)
       this.selectDialogVisible = false
     }
   }

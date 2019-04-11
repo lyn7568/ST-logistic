@@ -29,12 +29,8 @@ new Vue({
       baseurl: window.cfg.baseurl,
       roles: [],
       classifications: [],
-      shopArrs: [],
-      supplierArrs: [],
-      carrierArrs: [],
-      productArrs: [],
-      wareHouses: [],
-      wareHouseAreas: [],
+      wareHouseAreasTwo: [],
+      wareHouseAreasThree: [],
       truckList: [], //车辆
       userList: [], //司机
       entrepotList: [], //配送点
@@ -43,10 +39,6 @@ new Vue({
   watch: {
     classifications(val) {
       this.classifications = val
-    },
-    shopArrs(val) {
-      console.log(val)
-      this.shopArrs = val
     }
   },
   methods: {
@@ -87,53 +79,37 @@ new Vue({
         this.classifications = data.result;
       }
     },
-    async getShops() {
-      let { data } = await this.$http.post('/product/shopList', {
-        page: 1,
-        pageSize: 1000
-       });
-      if(data.code == 1) {
-        this.shopArrs = data.result.result;
-      }
-    },
-    async getSuppliers() {
-      let { data } = await this.$http.post('/supplier/list', {
-        page: 1,
-        pageSize: 1000
-       });
-      if(data.code == 1) {
-        this.supplierArrs = data.result.result;
-      }
-    },
-    async getCarriers() {
-      let { data } = await this.$http.post('/carrier/list', {
-        page: 1,
-        pageSize: 1000
-       });
-      if(data.code == 1) {
-        this.carrierArrs = data.result.result;
-      }
-    },
-    async getProducts() {
-      let { data } = await this.$http.post('/product/list', {
-        page: 1,
-        pageSize: 1000
-       });
-      if(data.code == 1) {
-        this.productArrs = data.result.result;
-      }
-    },
-    async getWareHouses() {
+     // 俩级联动
+    async getWareHousesTwo() {
       let { data } = await this.$http.get('/warehouse/getAllWarehouse', { });
       if(data.code == 1) {
-        this.wareHouses = data.result;
-        this.wareHouseAreas = data.result;
-        for(let i = 0; i < this.wareHouseAreas.length; ++i) {
-          this.getWareHousesArea(this.wareHouseAreas[i])
+        var obj = data.result;
+        for(let i = 0; i < obj.length; ++i) {
+          this.getWareHousesAreaTwo(obj[i])
         }
+        this.wareHouseAreasTwo = obj;
       }
     },
-    async getWareHousesArea(obj) {
+    async getWareHousesAreaTwo(obj) {
+      let { data } = await this.$http.post('/warehouse/getAreaByWarehouseId', {
+        warehouseId: obj.id
+      });
+      if(data.code == 1) {
+        obj.result = data.result
+      }
+    },
+    // 三级联动
+    async getWareHousesThree() {
+      let { data } = await this.$http.get('/warehouse/getAllWarehouse', { });
+      if(data.code == 1) {
+        var obj = data.result;
+        for(let i = 0; i < obj.length; ++i) {
+          this.getWareHousesAreaThree(obj[i])
+        }
+        this.wareHouseAreasThree = obj;
+      }
+    },
+    async getWareHousesAreaThree(obj) {
       let { data } = await this.$http.post('/warehouse/getAreaByWarehouseId', {
         warehouseId: obj.id
       });
@@ -167,11 +143,8 @@ new Vue({
     this.clear();
     this.getRoles();
     this.getClassificationss();
-    this.getShops();
-    this.getSuppliers();
-    this.getCarriers();
-    this.getProducts();
-    this.getWareHouses();
+    this.getWareHousesThree();
+    this.getWareHousesTwo();
     this.initData();
   },
   render: h => h(App)
