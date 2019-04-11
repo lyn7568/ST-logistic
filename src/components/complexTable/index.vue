@@ -40,6 +40,7 @@
             <div v-else-if="item.aType">{{scope.row[item.prop] | aType }}</div>
             <div v-else-if="item.lType">{{scope.row[item.prop] | lType }}</div>
             <div v-else-if="item.ISType">{{scope.row[item.prop] | ISType }}</div>
+            <div v-else-if="item.OSType">{{scope.row[item.prop] | OSType }}</div>
             <el-tag v-else-if="item.sTag" :type="tagType(scope.row[item.prop], true)">{{tagType(scope.row[item.prop])}}</el-tag>
             <el-radio v-else-if="item.radio" :label="scope.row[item.prop]" v-model="templateRadio" @change.native="getTemplateRow(scope.$index,scope.row)">&nbsp;</el-radio>
             <div v-else>{{scope.row[item.prop]}}</div>
@@ -48,7 +49,7 @@
             <template v-if="tableObject.hFun">
               <el-button
                 type="text"
-                v-show="scope.row.status===0 || scope.row.status===2"
+                v-show="scope.row.status===0"
                 v-for="operate in tableObject.hFun"
                 :key="operate.index"
                 @click="$emit(operate.event, scope.row, scope.$index)"

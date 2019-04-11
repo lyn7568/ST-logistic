@@ -91,8 +91,16 @@ export default {
             ISType: true
           },
           {
-            prop: 'supplieName',
+            prop: 'supplierName',
             tit: '供应商'
+          },
+          {
+            prop: 'supplierNumber',
+            tit: '供应商编号'
+          },
+          {
+            prop: 'supplierPhone',
+            tit: '供应商联系方式'
           },
           {
             prop: 'status',

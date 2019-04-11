@@ -89,8 +89,12 @@ export default {
             OSType: true
           },
           {
-            prop: 'supplieName',
-            tit: '供应商'
+            prop: 'carrierName',
+            tit: '承运商'
+          },
+          {
+            prop: 'carrierNumber',
+            tit: '承运商编号'
           },
           {
             prop: 'status',

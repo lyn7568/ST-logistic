@@ -5,20 +5,20 @@
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
     <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"
-    @clickSelectProduct="clickSelectProduct" @clickSelectSupplier="clickSelectSupplier"></form-lists>
+    @clickSelectGoods="clickSelectGoods" @clickSelectSupplier="clickSelectSupplier"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="closeDialog">取消</div>
     </div>
   </el-dialog>
-  <select-product ref="selectProductDialog" @selectProductName="selectProductName"></select-product>
+  <select-goods ref="selectGoodsDialog" @selectGoodsName="selectGoodsName"></select-goods>
   <select-supplier ref="selectSupplierDialog" @selectSupplierName="selectSupplierName"></select-supplier>
 </div>
 </template>
 
 <script>
 import formLists from '@/components/Formlists'
-import selectProduct from '@/pages/storage/selectTem/selectProduct'
+import selectGoods from '@/pages/storage/selectTem/selectGoods'
 import selectSupplier from '@/pages/storage/selectTem/selectSupplier'
 import { slelectInStorageType } from '@/util/dict'
 export default {
@@ -35,7 +35,7 @@ export default {
         {
           prop: 'productName',
           tit: '货物名称',
-          dbclick: 'clickSelectProduct',
+          dbclick: 'clickSelectGoods',
           required: true,
           eveWay: 'change'
         },
@@ -79,7 +79,7 @@ export default {
   },
   components: {
     formLists,
-    selectProduct,
+    selectGoods,
     selectSupplier
   },
   methods: {
@@ -130,7 +130,7 @@ export default {
             batch: this.formObj.batch,
             supplierId: this.formObj.supplierId,
             type: this.formObj.type,
-            productId: this.formObj.name,
+            productId: this.formObj.productId,
             operationAmount: this.formObj.operationAmount,
             warehouseId: wid,
             areaId: aid,
@@ -157,16 +157,16 @@ export default {
         }
       })
     },
-    clickSelectProduct() {
+    clickSelectGoods() {
       let sid = ''
       if (this.formObj.productId) {
         sid = this.formObj.productId
       }
-      this.$refs.selectProductDialog.openDiag(sid)
+      this.$refs.selectGoodsDialog.openDiag(sid)
     },
-    selectProductName(val) {
-      this.formObj.productName = val.productName
-      this.formObj.productId = val.productId
+    selectGoodsName(val) {
+      this.formObj.productName = val.name
+      this.formObj.productId = val.id
     },
     clickSelectSupplier() {
       let sid = ''

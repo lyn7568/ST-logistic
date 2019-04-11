@@ -130,7 +130,7 @@ export default {
             batch: this.formObj.batch,
             carrierId: this.formObj.carrierId,
             type: this.formObj.type,
-            productId: this.formObj.name,
+            productId: this.formObj.productId,
             operationAmount: this.formObj.operationAmount,
             warehouseId: wid,
             areaId: aid,
