@@ -36,21 +36,21 @@ Vue.filter('sType', function (value) {
 // 仓库类型
 Vue.filter('wType', function (value) {
   let w = slelectDeportType.find(item => {
-    return item.id === value
+    return item.id == value
   })
   return w.name
 });
 // 库区类型
 Vue.filter('aType', function (value) {
   let w = slelectAreaType.find(item => {
-    return item.id === value
+    return item.id == value
   })
   return w.name
 });
 // 货位类型
 Vue.filter('lType', function (value) {
   let w = slelectLocationType.find(item => {
-    return item.id === value
+    return item.id == value
   })
   return w.name
 });

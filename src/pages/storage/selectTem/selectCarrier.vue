@@ -52,25 +52,8 @@ export default {
             tit: '承运商编号'
           },
           {
-            prop: 'address',
-            tit: '地址'
-          },
-          {
-            prop: 'type',
-            tit: '类型',
-            sType: true
-          },
-          {
-            prop: 'email',
-            tit: '邮箱'
-          },
-          {
-            prop: 'phone',
-            tit: '联系方式'
-          },
-          {
-            prop: 'contacter',
-            tit: '联系人'
+            prop: 'remark',
+            tit: '备注'
           },
           {
             prop: 'des',
