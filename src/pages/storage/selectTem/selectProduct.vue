@@ -170,7 +170,7 @@ export default {
       this.selectDialogVisible = false
     },
     remoteSearchCascader() {
-      this.$refs.filterForm.cascaderList = this.$root.wareHouseAreasTwo
+      this.$refs.filterForm.cascaderList = this.$root.wareHouseAreasThree
     }
   }
 }
