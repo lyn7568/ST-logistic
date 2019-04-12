@@ -4,7 +4,8 @@
     :title="(objId ? '修改': '添加')+ '入库信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" :cascaderDef="$root.wareHouseAreasThree"
+    @changeIfUse="changeIfUse"
     @clickSelectGoods="clickSelectGoods" @clickSelectSupplier="clickSelectSupplier"
     @remoteSearchCascader="remoteSearchCascader"></form-lists>
     <div class="dialog--foot flex">
@@ -42,7 +43,7 @@ export default {
         },
         {
           prop: 'ckq',
-          tit: '仓库/库区/库位',
+          tit: '仓库/库区/货位',
           cascader: true,
           required: true
         },

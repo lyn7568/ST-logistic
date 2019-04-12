@@ -107,6 +107,12 @@
       },
       formItem: {
         type: Array
+      },
+      cascaderDef: {
+        type: Array
+      },
+      backSortArr: {
+        type: Array
       }
     },
     data() {
@@ -125,6 +131,12 @@
       }
     },
     created() {
+      if (this.cascaderDef) {
+        this.cascaderList = this.cascaderDef
+      }
+      if (this.backSortArr) {
+        this.backInfoArr = this.backSortArr
+      }
       this.pushRulesFn()
     },
     methods: {

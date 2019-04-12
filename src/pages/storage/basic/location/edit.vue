@@ -3,7 +3,7 @@
     :title="(objId ? '修改': '添加')+ '货位信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" :cascaderDef="$root.wareHouseAreasTwo"
     @changeIfUse="changeIfUse" @remoteSearchCascader="remoteSearchCascader"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
