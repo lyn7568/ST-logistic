@@ -5,7 +5,7 @@
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
     <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"
-      @clickSelectShops="clickSelectShops"></form-lists>
+      @clickSelectShops="clickSelectShops" @remoteSearchSort="remoteSearchSort"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
@@ -49,9 +49,9 @@ export default {
           eveWay: 'change'
         },
         {
-          prop: 'classificationId',
+          prop: 'classificationName',
           tit: '所属分类',
-          select: this.$root.classifications,
+          selectSearch: true,
           required: true
         },
         {
@@ -170,6 +170,9 @@ export default {
     selectShopName(val) {
       this.formObj.shopName = val.name
       this.formObj.shopId = val.id
+    },
+    remoteSearchSort() {
+      this.$refs.showForm.backInfoArr = this.$root.classifications;
     }
   }
 }

@@ -53,6 +53,16 @@ export default {
           onlyShow: true
         },
         {
+          prop: 'supplierNumber',
+          tit: '供应商编号',
+          onlyShow: true
+        },
+        {
+          prop: 'supplierPhone',
+          tit: '供应商联系方式',
+          onlyShow: true
+        },
+        {
           prop: 'type',
           tit: '入库类型',
           ISType: true,

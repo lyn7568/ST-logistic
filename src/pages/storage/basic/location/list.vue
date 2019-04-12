@@ -4,7 +4,9 @@
     <MyTitle text = "货位管理"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
+        <filter-form ref="filterForm" :formObject="formObject"
+        @addOpenDialogFun="addOpenDialogFun" @search="search"
+        @remoteSearchCascader="remoteSearchCascader"></filter-form>
       </div>
       <complex-table ref="tableChildObj" v-loading="tableLoading"
             :tableObject="tableObjectFirst"
@@ -112,7 +114,7 @@ export default {
           {
             prop: 'ckq',
             tit: '仓库/库区',
-            cascader: this.$root.wareHouseAreasTwo
+            cascader: true
           }
         ],
         oFun: [
@@ -190,6 +192,9 @@ export default {
       if(data.code == 1) {
         this.resetInfo();
       }
+    },
+    remoteSearchCascader() {
+      this.$refs.filterForm.cascaderList = this.$root.wareHouseAreasTwo
     }
   },
   created() {

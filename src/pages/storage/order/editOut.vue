@@ -40,10 +40,22 @@ export default {
           eveWay: 'change'
         },
         {
-          prop: 'ckq',
-          tit: '仓库/库区/库位',
-          cascader: this.$root.wareHouseAreasThree,
-          required: true
+          prop: 'warehouseName',
+          tit: '所属仓库',
+          place: true,
+          readonly: true
+        },
+        {
+          prop: 'areaName',
+          tit: '所属库区',
+          place: true,
+          readonly: true
+        },
+        {
+          prop: 'locationName',
+          tit: '所属货位',
+          place: true,
+          readonly: true
         },
         {
           prop: 'carrierName',
@@ -51,6 +63,12 @@ export default {
           dbclick: 'clickSelectCarrier',
           required: true,
           eveWay: 'change'
+        },
+        {
+          prop: 'carrierNumber',
+          tit: '承运商编号',
+          place: true,
+          readonly: true
         },
         {
           prop: 'type',
@@ -67,13 +85,19 @@ export default {
       ],
       formObj: {
         batch: '',
-        ckq: [],
         carrierId: '',
         carrierName: '',
+        carrierNumber: '',
         type: '',
         productId: '',
         productName: '',
-        operationAmount: 0
+        operationAmount: 0,
+        warehouseId: '',
+        warehouseName: '',
+        areaId: '',
+        areaName: '',
+        locationId: '',
+        locationName: ''
       }
     }
   },
@@ -87,22 +111,24 @@ export default {
       var that = this
       if (val) {
         this.objId = val.id
-        val.ckq = []
-        val.ckq.push(val.warehouseId)
-        val.ckq.push(val.areaId)
-        val.ckq.push(val.locationId)
         this.formObj = val
       } else {
         this.objId = ''
         this.formObj = {
           batch: '',
-          ckq: [],
           carrierId: '',
           carrierName: '',
+          carrierNumber: '',
           type: '',
           productId: '',
           productName: '',
-          operationAmount: 0
+          operationAmount: 0,
+          warehouseId: '',
+          warehouseName: '',
+          areaId: '',
+          areaName: '',
+          locationId: '',
+          locationName: ''
         }
       }
       setTimeout(() => {
@@ -120,21 +146,15 @@ export default {
       var that = this
       this.$refs['showForm'].$refs['formObj'].validate(valid => {
         if (valid) {
-          let wid = '', aid = '', lid = ''
-          if (this.formObj.ckq){
-            wid = this.formObj.ckq[0]
-            aid = this.formObj.ckq[1]
-            lid = this.formObj.ckq[2]
-          }
           var params = {
             batch: this.formObj.batch,
             carrierId: this.formObj.carrierId,
             type: this.formObj.type,
             productId: this.formObj.productId,
             operationAmount: this.formObj.operationAmount,
-            warehouseId: wid,
-            areaId: aid,
-            locationId: lid
+            warehouseId:  this.formObj.warehouseId,
+            areaId: this.formObj.areaId,
+            locationId: this.formObj.locationId
           };
           if (that.objId) {
             params = Object.assign(params, {id: that.objId})
@@ -167,6 +187,12 @@ export default {
     selectProductName(val) {
       this.formObj.productName = val.productName
       this.formObj.productId = val.productId
+      this.formObj.warehouseName = val.warehouseName
+      this.formObj.warehouseId = val.warehouseId
+      this.formObj.areaName = val.areaName
+      this.formObj.areaId = val.areaId
+      this.formObj.locationName = val.locationName
+      this.formObj.locationId = val.locationId
     },
     clickSelectCarrier() {
       let sid = ''
@@ -177,6 +203,7 @@ export default {
     },
     selectCarrierName(val) {
       this.formObj.carrierName = val.name
+      this.formObj.carrierNumber = val.number
       this.formObj.carrierId = val.id
     }
   }

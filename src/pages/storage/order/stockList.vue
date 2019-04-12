@@ -4,7 +4,8 @@
     <MyTitle text = "库存盘点"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <filter-form :formObject="formObject" @exportExcel="exportExcel" @search="search"></filter-form>
+        <filter-form ref="filterForm" :formObject="formObject" @exportExcel="exportExcel" @search="search"
+        @remoteSearchCascader="remoteSearchCascader"></filter-form>
       </div>
       <complex-table ref="tableChildObj" v-loading="tableLoading"
             :tableObject="tableObject"
@@ -77,7 +78,7 @@ export default {
           {
             prop: 'ckq',
             tit: '仓库/库区/货位',
-            cascader: this.$root.wareHouseAreasThree
+            cascader: true
           }
         ],
         oFun: [
@@ -174,6 +175,9 @@ export default {
       return jsonData.map(v => filterVal.map(j => {
         return v[j]
       }))
+    },
+    remoteSearchCascader() {
+      this.$refs.filterForm.cascaderList = this.$root.wareHouseAreasThree
     }
   },
   created() {

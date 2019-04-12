@@ -4,7 +4,9 @@
     <MyTitle text = "库区管理"></MyTitle>
     <div class="staff-manage white1">
       <div class="flex between search--wrap">
-        <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
+        <filter-form ref="filterForm" :formObject="formObject"
+        @addOpenDialogFun="addOpenDialogFun" @search="search"
+        @remoteSearchSort="remoteSearchSort"></filter-form>
       </div>
       <complex-table ref="tableChildObj" v-loading="tableLoading"
             :tableObject="tableObjectFirst"
@@ -109,7 +111,7 @@ export default {
           {
             prop: 'warehouseId',
             tit: '所属仓库',
-            select: this.$root.wareHouseAreasTwo
+            selectSearch: true
           }
         ],
         oFun: [
@@ -182,6 +184,9 @@ export default {
       if(data.code == 1) {
         this.resetInfo();
       }
+    },
+    remoteSearchSort() {
+      this.$refs.filterForm.backInfoArr = this.$root.wareHouseAreasOne
     }
   },
   created() {

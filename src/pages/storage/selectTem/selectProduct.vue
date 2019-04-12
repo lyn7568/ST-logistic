@@ -1,10 +1,10 @@
 <template>
   <el-dialog
-    title="选择入库货物"
+    title="选择出库货物"
     :visible.sync="selectDialogVisible"
     :close-on-click-modal="false">
     <div class="flex between search--wrap">
-      <filter-form :formObject="formObject" @search="search"></filter-form>
+      <filter-form ref="filterForm" :formObject="formObject" @search="search" @remoteSearchCascader="remoteSearchCascader"></filter-form>
     </div>
     <complex-table ref="tableChildObj" v-loading="tableLoading"
       :tableObject="tableObject"
@@ -74,8 +74,8 @@ export default {
         ref: 'formObject',
         model: {
           productName: '',
-          productNumber: '',
-          ckq: []
+          productNumber: ''
+          // ckq: []
         },
         arr: [
           {
@@ -89,7 +89,7 @@ export default {
           {
             prop: 'ckq',
             tit: '仓库/库区/货位',
-            cascader: this.$root.wareHouseAreasThree
+            cascader: true
           }
         ],
         oFun: [
@@ -168,6 +168,9 @@ export default {
       }
       this.$emit('selectProductName', this.radioSelectInfo)
       this.selectDialogVisible = false
+    },
+    remoteSearchCascader() {
+      this.$refs.filterForm.cascaderList = this.$root.wareHouseAreasTwo
     }
   }
 }

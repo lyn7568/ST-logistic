@@ -29,16 +29,12 @@ new Vue({
       baseurl: window.cfg.baseurl,
       roles: [],
       classifications: [],
+      wareHouseAreasOne: [],
       wareHouseAreasTwo: [],
       wareHouseAreasThree: [],
       truckList: [], //车辆
       userList: [], //司机
       entrepotList: [], //配送点
-    }
-  },
-  watch: {
-    classifications(val) {
-      this.classifications = val
     }
   },
   methods: {
@@ -79,7 +75,15 @@ new Vue({
         this.classifications = data.result;
       }
     },
-     // 俩级联动
+    // 一级仓库
+    async getWareHousesOne() {
+      let { data } = await this.$http.get('/warehouse/getAllWarehouse', { });
+      if(data.code == 1) {
+        var obj = data.result;
+        this.wareHouseAreasOne = obj;
+      }
+    },
+    // 俩级联动
     async getWareHousesTwo() {
       let { data } = await this.$http.get('/warehouse/getAllWarehouse', { });
       if(data.code == 1) {
@@ -142,10 +146,11 @@ new Vue({
     }
     this.clear();
     this.getRoles();
-    this.getClassificationss();
-    this.getWareHousesThree();
-    this.getWareHousesTwo();
     this.initData();
+    this.getClassificationss();
+    this.getWareHousesOne();
+    this.getWareHousesTwo();
+    this.getWareHousesThree();
   },
   render: h => h(App)
 });

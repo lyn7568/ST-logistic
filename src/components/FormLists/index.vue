@@ -32,10 +32,21 @@
             @change="changeChecked">
           </el-checkbox>
           <el-select
+            v-else-if="item.selectSearch"
+            v-model="formModel[item.prop]"
+            :placeholder="'请选择'+item.tit"
+            @focus="remoteMethod">
+            <el-option
+              v-for="sel in backInfoArr"
+              :key="sel.id"
+              :label="sel.name"
+              :value="sel.id">
+            </el-option>
+          </el-select>
+          <el-select
             v-else-if="item.select"
             v-model="formModel[item.prop]"
-            :placeholder="item.tit"
-            @change="changeSelected">
+            :placeholder="'请选择'+item.tit">
             <el-option
               v-for="sel in item.select"
               :key="sel.id"
@@ -50,7 +61,7 @@
           </el-input-number>
           <el-cascader
             v-else-if="item.cascader"
-            :options="item.cascader"
+            :options="cascaderList"
             :props="{
               value: 'id',
               label: 'name',
@@ -58,7 +69,8 @@
             }"
             clearable
             v-model="formModel[item.prop]"
-            :placeholder="'请选择'+item.tit">
+            :placeholder="'请选择'+item.tit"
+            @focus="remoteCascader">
           </el-cascader>
           <div v-else-if="item.onlyShow">
             <template v-if="item.ISType">{{formModel[item.prop] | ISType}}</template>
@@ -74,8 +86,9 @@
           ></el-input>
           <el-input
             v-else
+            :disabled="item.readonly"
             v-model="formModel[item.prop]"
-            :placeholder="`请填写${item.tit}`"
+            :placeholder="item.place? '此处为回显内容' :`请填写${item.tit}`"
             :maxlength="item.num||''"
           ></el-input>
         </el-form-item>
@@ -98,7 +111,17 @@
     },
     data() {
       return {
-       rulesObj: {}
+        rulesObj: {},
+        backInfoArr: [],
+        cascaderList: []
+      }
+    },
+    watch: {
+      backInfoArr(val) {
+        this.backInfoArr = val
+      },
+      cascaderList(val) {
+        this.cascaderList = val
       }
     },
     created() {
@@ -126,6 +149,18 @@
           }
           rulesObj[formItem[i].prop] = ru
         }
+      },
+      remoteMethod() {
+        if (this.backInfoArr.length) {
+          return
+        }
+        this.$emit('remoteSearchSort', '')
+      },
+      remoteCascader() {
+        if (this.cascaderList.length) {
+          return
+        }
+        this.$emit('remoteSearchCascader', '')
       }
     }
   }

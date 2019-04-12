@@ -3,7 +3,8 @@
     :title="(objId ? '修改': '添加')+ '货位信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"></form-lists>
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"
+    @changeIfUse="changeIfUse" @remoteSearchCascader="remoteSearchCascader"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="dialogFormVisible=false">取消</div>
@@ -35,7 +36,7 @@ export default {
         {
           prop: 'ckq',
           tit: '仓库/库区',
-          cascader: this.$root.Two,
+          cascader: true,
           required: true
         },
         {
@@ -136,6 +137,9 @@ export default {
           })
         }
       })
+    },
+    remoteSearchCascader() {
+      this.$refs.showForm.cascaderList = this.$root.wareHouseAreasTwo
     }
   }
 }

@@ -5,7 +5,8 @@
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
     <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"
-    @clickSelectGoods="clickSelectGoods" @clickSelectSupplier="clickSelectSupplier"></form-lists>
+    @clickSelectGoods="clickSelectGoods" @clickSelectSupplier="clickSelectSupplier"
+    @remoteSearchCascader="remoteSearchCascader"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="closeDialog">取消</div>
@@ -42,7 +43,7 @@ export default {
         {
           prop: 'ckq',
           tit: '仓库/库区/库位',
-          cascader: this.$root.wareHouseAreasThree,
+          cascader: true,
           required: true
         },
         {
@@ -51,6 +52,18 @@ export default {
           dbclick: 'clickSelectSupplier',
           required: true,
           eveWay: 'change'
+        },
+        {
+          prop: 'supplierNumber',
+          tit: '供应商编号',
+          place: true,
+          readonly: true
+        },
+        {
+          prop: 'supplierPhone',
+          tit: '供应商联系方式',
+          place: true,
+          readonly: true
         },
         {
           prop: 'type',
@@ -70,6 +83,8 @@ export default {
         ckq: [],
         supplierId: '',
         supplierName: '',
+        supplierNumber: '',
+        supplierPhone: '',
         type: '',
         productId: '',
         productName: '',
@@ -99,6 +114,8 @@ export default {
           ckq: [],
           supplierId: '',
           supplierName: '',
+          supplierNumber: '',
+          supplierPhone: '',
           type: '',
           productId: '',
           productName: '',
@@ -176,8 +193,13 @@ export default {
       this.$refs.selectSupplierDialog.openDiag(sid)
     },
     selectSupplierName(val) {
+      this.formObj.supplierPhone = val.phone
+      this.formObj.supplierNumber = val.number
       this.formObj.supplierName = val.name
       this.formObj.supplierId = val.id
+    },
+    remoteSearchCascader() {
+      this.$refs.showForm.cascaderList = this.$root.wareHouseAreasThree
     }
   }
 }

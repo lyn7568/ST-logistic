@@ -53,6 +53,11 @@ export default {
           onlyShow: true
         },
         {
+          prop: 'carrierNumber',
+          tit: '承运商编号',
+          onlyShow: true
+        },
+        {
           prop: 'type',
           tit: '出库类型',
           OSType: true,

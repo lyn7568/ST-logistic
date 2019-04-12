@@ -3,7 +3,8 @@
     :title="(objId ? '修改': '添加')+ '库区信息'"
     :visible.sync="dialogFormVisible"
     :before-close="closeDialog" :close-on-click-modal="false">
-    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm" @changeIfUse="changeIfUse"></form-lists>
+    <form-lists :formItem="formItem" :formModel="formObj" ref="showForm"
+    @changeIfUse="changeIfUse" @remoteSearchSort="remoteSearchSort"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
       <div class="nocolor--btn" @click="cancelDialog">取消</div>
@@ -33,10 +34,10 @@ export default {
           required: true
         },
         {
-          prop: 'warehouseId',
+          prop: 'warehouseName',
           tit: '所属仓库',
           required: true,
-          select: this.$root.wareHouseAreasTwo
+          selectSearch: true
         },
         {
           prop: 'type',
@@ -140,6 +141,9 @@ export default {
           })
         }
       })
+    },
+    remoteSearchSort() {
+      this.$refs.showForm.backInfoArr = this.$root.wareHouseAreasOne
     }
   }
 }
