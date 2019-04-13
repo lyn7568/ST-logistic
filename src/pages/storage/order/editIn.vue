@@ -154,10 +154,15 @@ export default {
             areaId: aid,
             locationId: lid
           };
+          var url = '/operation/comeSave'
           if (that.objId) {
-            params = Object.assign(params, {id: that.objId})
+            params = Object.assign(params, {
+              id: that.objId,
+              status: 0
+            })
+            url = '/operation/updateCome'
           }
-          this.$http.post('/operation/comeSave', params)
+          this.$http.post(url, params)
           .then(({ data }) => {
             this.showMsg(data);
             if(data.code == 1) {

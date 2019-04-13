@@ -6,20 +6,19 @@
       <div class="flex between search--wrap">
         <filter-form :formObject="formObject" @addOpenDialogFun="addOpenDialogFun" @search="search"></filter-form>
       </div>
-      <el-tabs v-model="activeName" type="border-card" @tab-click="tabChangeFun">
+      <el-tabs v-model="activeName" type="border-card" @tab-click="tabClickFun">
         <el-tab-pane v-for="item in tabList" :label="item.name" :name="item.tab" :key="item.index">
         </el-tab-pane>
         <complex-table ref="tableChildObj" v-loading="tableLoading"
-            :tableObject="tableObjectFirst"
-            @pageCurFun="currentPageChangeFirst"
-            @editOpenDialogFun="editOpenDialogFun"
-            @approveEvent="approveEvent"
-            @deleteEvent="deleteEvent"
-            @exportExcel="exportExcel"></complex-table>
-
-        <edit-out-storage ref="infoEditDialog"></edit-out-storage>
-        <approve-out ref="approveDialog"></approve-out>
+          :tableObject="tableObjectFirst"
+          @pageCurFun="currentPageChangeFirst"
+          @editOpenDialogFun="editOpenDialogFun"
+          @approveEvent="approveEvent"
+          @deleteEvent="deleteEvent"
+          @exportExcel="exportExcel"></complex-table>
       </el-tabs>
+      <edit-out-storage ref="infoEditDialog"></edit-out-storage>
+      <approve-out ref="approveDialog"></approve-out>
     </div>
   </div>
 </template>
@@ -33,8 +32,12 @@ import { slelectOutStorageType } from '@/util/dict'
 export default {
   data () {
     return {
-      activeName: '0',
+      activeName: '4',
       tabList: [
+        {
+          tab: '4',
+          name: '所有'
+        },
         {
           tab: '0',
           name: '待审批'
@@ -193,12 +196,13 @@ export default {
       this.$refs.infoEditDialog.openDiag()
     },
     async getlists() {
+      let sta = parseInt(this.activeName)
       let params = {
         page: this.tableObjectFirst.pageNo,
         pageSize: this.tableObjectFirst.pageSize,
         orderNumber: this.formObject.model.orderNumber,
         type: this.formObject.model.type,
-        status: parseInt(this.activeName)
+        status: (sta !== 4) ? sta : ''
       }
 
       let { data } = await this.$http.post('/operation/outList', params),
@@ -214,9 +218,8 @@ export default {
     search(){
       this.resetInfo()
     },
-    tabChangeFun(tab, event) {
-      this.activeName = tab.name
-      this.getlists()
+    tabClickFun(val) {
+      this.resetInfo()
     },
     resetInfo() {
       this.tableObjectFirst.data = []

@@ -35,8 +35,12 @@ import { slelectInStorageType } from '@/util/dict'
 export default {
   data () {
     return {
-      activeName: '0',
+      activeName: '4',
       tabList: [
+        {
+          tab: '4',
+          name: '所有'
+        },
         {
           tab: '0',
           name: '待审批'
@@ -204,12 +208,13 @@ export default {
       this.$refs.infoEditDialog.openDiag()
     },
     async getlists() {
+      let sta = parseInt(this.activeName)
       let params = {
         page: this.tableObjectFirst.pageNo,
         pageSize: this.tableObjectFirst.pageSize,
         orderNumber: this.formObject.model.orderNumber,
         type: this.formObject.model.type,
-        status: parseInt(this.activeName)
+        status: (sta !== 4) ? sta : ''
       }
 
       let { data } = await this.$http.post('/operation/comeList', params),

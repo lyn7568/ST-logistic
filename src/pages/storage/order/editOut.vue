@@ -156,10 +156,15 @@ export default {
             areaId: this.formObj.areaId,
             locationId: this.formObj.locationId
           };
+          var url = '/operation/outSave'
           if (that.objId) {
-            params = Object.assign(params, {id: that.objId})
+            params = Object.assign(params, {
+              id: that.objId,
+              status: 0
+            })
+            url = '/operation/updateOut'
           }
-          this.$http.post('/operation/outSave', params)
+          this.$http.post(url, params)
           .then(({ data }) => {
             this.showMsg(data);
             if(data.code == 1) {

@@ -77,7 +77,7 @@ export default {
         contacter: '',
         type: '',
         leaseDateTime: '',
-        ifUse: 0
+        ifUse: false
       }
     }
   },
@@ -89,6 +89,7 @@ export default {
       var that = this
       if (val) {
         this.objId = val.id
+        val.ifUse = val.ifUse==1 || false
         this.formObj = val
       } else {
         this.objId = ''
@@ -101,7 +102,7 @@ export default {
           contacter: '',
           type: '',
           leaseDateTime: '',
-          ifUse: 0
+          ifUse: false
         }
       }
       setTimeout(() => {
@@ -109,7 +110,7 @@ export default {
       }, 1)
     },
     changeIfUse(val) {
-      this.formObj.ifUse = Number(!val)
+      this.formObj.ifUse = val
     },
     closeDialog() {
       this.$refs['showForm'].$refs['formObj'].clearValidate()

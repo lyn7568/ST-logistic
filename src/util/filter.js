@@ -71,6 +71,6 @@ Vue.filter('OSType', function (value) {
 
 // 是否禁用
 Vue.filter('ifUse', function (value) {
-  return value == 1 ? '否' : '是'
+  return value == 1 ? '是' : '否';
 });
 

@@ -28,7 +28,7 @@
           <el-checkbox
             v-else-if="item.checkbox"
             v-model="formModel[item.prop]"
-            :checked="!formModel[item.prop]"
+            :checked="formModel[item.prop]"
             @change="changeChecked">
           </el-checkbox>
           <el-select
@@ -144,6 +144,7 @@
         // console.log(val)
       },
       changeChecked(val) {
+        console.log('components:'+val)
         this.$emit('changeIfUse', val)
       },
       pushRulesFn() {

@@ -61,8 +61,8 @@ export default {
         number: '',
         remark: '',
         type: '',
-        ifUse: 1,
-        areaId: ''
+        ifUse: false,
+        ckq: []
       }
     }
   },
@@ -74,6 +74,7 @@ export default {
       var that = this
       if (val) {
         this.objId = val.id
+        val.ifUse = val.ifUse==1 || false
         val.ckq = []
         val.ckq.push(val.warehouseId)
         val.ckq.push(val.areaId)
@@ -85,7 +86,7 @@ export default {
           number: '',
           remark: '',
           type: '',
-          ifUse: 1,
+          ifUse: false,
           ckq: []
         }
       }
@@ -94,7 +95,7 @@ export default {
       }, 1)
     },
     changeIfUse(val) {
-      this.formObj.ifUse = Number(!val)
+      this.formObj.ifUse = val
     },
     closeDialog() {
       this.$refs['showForm'].$refs['formObj'].clearValidate()

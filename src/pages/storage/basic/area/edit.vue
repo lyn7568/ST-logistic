@@ -7,7 +7,7 @@
     @changeIfUse="changeIfUse" @remoteSearchSort="remoteSearchSort"></form-lists>
     <div class="dialog--foot flex">
       <div class="color--btn" @click="saveSubmitInfo">提交</div>
-      <div class="nocolor--btn" @click="cancelDialog">取消</div>
+      <div class="nocolor--btn" @click="dialogFormVisible = false">取消</div>
     </div>
   </el-dialog>
 </template>
@@ -34,10 +34,10 @@ export default {
           required: true
         },
         {
-          prop: 'warehouseName',
-          tit: '所属仓库',
-          required: true,
-          selectSearch: true
+          prop: 'ckq',
+          tit: '仓库',
+          cascader: true,
+          required: true
         },
         {
           prop: 'type',
@@ -61,8 +61,8 @@ export default {
         number: '',
         remark: '',
         type: '',
-        ifUse: 1,
-        warehouseId: ''
+        ifUse: false,
+        ckq: []
       }
     }
   },
@@ -74,6 +74,9 @@ export default {
       var that = this
       if (val) {
         this.objId = val.id
+        val.ifUse = val.ifUse==1 || false
+        val.ckq = []
+        val.ckq.push(val.warehouseId)
         this.formObj = val
       } else {
         this.objId = ''
@@ -82,8 +85,8 @@ export default {
           number: '',
           remark: '',
           type: '',
-          ifUse: 1,
-          warehouseId: ''
+          ifUse: false,
+          ckq: []
         }
       }
       setTimeout(() => {
@@ -91,19 +94,7 @@ export default {
       }, 1)
     },
     changeIfUse(val) {
-      this.formObj.ifUse = Number(!val)
-    },
-    cancelDialog() {
-      this.objId = ''
-      this.formObj = {
-        name: '',
-        number: '',
-        remark: '',
-        type: '',
-        ifUse: 1,
-        warehouseId: ''
-      }
-      this.dialogFormVisible = false
+      this.formObj.ifUse = val
     },
     closeDialog() {
       this.$refs['showForm'].$refs['formObj'].clearValidate()
@@ -113,11 +104,15 @@ export default {
       var that = this
       this.$refs['showForm'].$refs['formObj'].validate(valid => {
         if (valid) {
+          let wid = ''
+          if (this.formObj.ckq){
+            wid = this.formObj.ckq[0]
+          }
           var params = {
             name: this.formObj.name,
             number: this.formObj.number,
             remark: this.formObj.remark,
-            warehouseId: this.formObj.warehouseId,
+            warehouseId: wid,
             type: this.formObj.type,
             ifUse: this.formObj.ifUse
           };
