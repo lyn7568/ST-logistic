@@ -35,6 +35,7 @@ new Vue({
       truckList: [], //车辆
       userList: [], //司机
       entrepotList: [], //配送点
+      companyList: []
     }
   },
   methods: {
@@ -61,6 +62,13 @@ new Vue({
         this.truckList = [];
         this.userList = [];
         this.entrepotList = [];
+      }
+    },
+    async getCompany() {
+      let { data } = await this.$http.post('/logistics/expressCompany/getExpressCompanyList.do', { status: 1 });
+
+      if(data.code == 1) {
+        this.companyList = data.result;
       }
     },
     async getRoles() {
@@ -147,6 +155,7 @@ new Vue({
     this.clear();
     this.getRoles();
     this.initData();
+    this.getCompany();
     this.getClassificationss();
     this.getWareHousesOne();
     this.getWareHousesTwo();

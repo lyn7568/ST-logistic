@@ -93,3 +93,21 @@ export const slelectOutStorageType = [
   }
 ]
 
+export const statusbyOrderArr = [
+  {
+    id: 1,
+    name: '未分配'
+  },
+  {
+    id: 2,
+    name: '已分配'
+  },
+  {
+    id: 3,
+    name: '配送中'
+  },
+  {
+    id: 4,
+    name: '已送达'
+  }
+]

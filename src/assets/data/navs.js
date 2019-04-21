@@ -95,6 +95,14 @@ module.exports = [{
 		"subMenuList": []
 	}, {
 		"iconUrl": "",
+		"id": 60,
+		"menuText": "快递单号查询",
+		"menuUrl": "/express/listByOrder",
+		"parentId": 8,
+		"status": 1,
+		"subMenuList": []
+	}, {
+		"iconUrl": "",
 		"id": 10,
 		"menuText": "快递分配",
 		"menuUrl": "/express/Inadd",

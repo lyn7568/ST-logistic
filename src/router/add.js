@@ -11,6 +11,7 @@ const CarList = () => import('@/pages/Car/CarList.vue');
 const InaddPage = () => import('@/pages/Express/InaddPage.vue');
 const InlistPage = () => import('@/pages/Express/InlistPage.vue');
 const AllotPage = () => import('@/pages/Express/AllotPage.vue');
+const QueryExpress = () => import('@/pages/Express/expressByOrderList.vue');
 const QueryExcel = () => import('@/pages/Express/QueryExcel.vue');
 const ListPage1 = () => import('@/pages/Express/ListPage1.vue');
 
@@ -40,6 +41,10 @@ export default [
 	{
     path: '/express/add', 
     component: ExpressAddPage
+  },
+  {
+    path: '/express/listByOrder', 
+    component: QueryExpress
   },
   {
     path: '/express/list1', 

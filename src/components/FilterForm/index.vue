@@ -15,12 +15,13 @@
       </el-select>
       <el-select
         v-else-if="item.select"
+        clearable
         v-model="formObject.model[item.prop]"
         :placeholder="'请选择'+item.tit">
         <el-option
           v-for="sel in item.select"
           :key="sel.id"
-          :label="sel.name"
+          :label="item.name ? sel[item.name] :sel.name"
           :value="sel.id">
         </el-option>
       </el-select>
