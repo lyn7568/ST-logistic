@@ -47,6 +47,10 @@ export default {
             tit: '车牌号'
           },
           {
+            prop: 'courierName',
+            tit: '司机'
+          },
+          {
             prop: 'statusValue',
             tit: '状态'
           },
